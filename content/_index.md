@@ -1,7 +1,7 @@
-+++
-title = "Central Valley Mesh"
-featured_image = "images/index-banner.jpg"
-+++
+---
+title: "Central Valley Mesh"
+featured_image: "images/index-banner.jpg"
+---
 
 ### Our Website is Under Construction 🚧
 

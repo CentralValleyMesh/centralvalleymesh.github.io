@@ -1,10 +1,19 @@
-baseURL: "http://centralvalleymesh.net/"
-languageCode: "en-us"
 title: "Central Valley Mesh"
+baseURL: "https://centralvalleymesh.net"
+languageCode: "en-us"
 theme: "ananke"
 
 params:
   site_logo: "images/central-valley-mesh.png"
+  background_color_class: "bg-black"
   ananke_socials:
     - name: github
       url: https://github.com/CentralValleyMesh/centralvalleymesh.github.io
+    - name: discord
+      url: https://discord.com/invite/9KUu5QQqMx
+
+menus:
+  main:
+    - name: Home
+      pageRef: /
+      weight: 1
