@@ -1,0 +1,15 @@
+name: Notify when a pull request is made
+on:
+  pull_request:
+    types:
+      - opened
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Discord notification
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: "A pull request to master has been opened: {{ EVENT_PAYLOAD.pull_request.html.href }}"
