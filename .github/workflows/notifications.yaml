@@ -12,4 +12,4 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
         uses: Ilshidur/action-discord@master
         with:
-          args: "A pull request to master has been opened: {{ EVENT_PAYLOAD.pull_request.html.href }}"
+          args: "A pull request to master has been opened: {{ EVENT_PAYLOAD.event.pull_request.html.href }}"
