@@ -1,0 +1,10 @@
+baseURL: "http://centralvalleymesh.net/"
+languageCode: "en-us"
+title: "Central Valley Mesh"
+theme: "ananke"
+
+params:
+  site_logo: "images/central-valley-mesh.png"
+  ananke_socials:
+    - name: github
+      url: https://github.com/CentralValleyMesh/centralvalleymesh.github.io
