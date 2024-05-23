@@ -1,0 +1,38 @@
+publish_mode: editorial_workflow
+backend:
+  name: github
+  branch: main
+  repo: centralvalleymesh/centralvalleymesh.github.io
+media_folder: static/images
+public_folder: /images
+collections:
+  - name: pages
+    label: Pages
+    label_singular: "Page"
+    folder: content
+    create: true
+    nested:
+      depth: 100
+    fields:
+      - label: Title
+        name: title
+        widget: string
+      - label: Body
+        name: body
+        widget: markdown
+    meta: { path: { widget: string, label: "Path", index_file: "_index" } }
+  - name: Resources
+    label: Resources
+    label_singular: "Resources"
+    folder: content/resources
+    create: true
+    nested:
+      depth: 100
+    fields:
+      - label: Title
+        name: title
+        widget: string
+      - label: Body
+        name: body
+        widget: markdown
+    meta: { path: { widget: string, label: "Path", index_file: "_index" } }
