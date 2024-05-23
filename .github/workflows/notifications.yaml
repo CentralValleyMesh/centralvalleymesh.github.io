@@ -1,9 +1,24 @@
 name: Notify when a pull request is made
 on:
   pull_request:
-    types:
-      - opened
+    types: [opened, closed, reopened]
+
 jobs:
+  printJob:
+    name: Print event
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: |
+          echo "$GITHUB_CONTEXT"
+      - name: Dump event payload
+        env:
+          EVENT_PAYLOAD: ${{ toJson(EVENT_PAYLOAD) }}
+        run: |
+          echo "$EVENT_PAYLOAD"
+
   notify:
     runs-on: ubuntu-latest
     steps:
