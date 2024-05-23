@@ -21,18 +21,3 @@ collections:
         name: body
         widget: markdown
     meta: { path: { widget: string, label: "Path", index_file: "_index" } }
-  - name: Resources
-    label: Resources
-    label_singular: "Resources"
-    folder: content/resources
-    create: true
-    nested:
-      depth: 100
-    fields:
-      - label: Title
-        name: title
-        widget: string
-      - label: Body
-        name: body
-        widget: markdown
-    meta: { path: { widget: string, label: "Path", index_file: "_index" } }
