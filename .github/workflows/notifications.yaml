@@ -18,13 +18,3 @@ jobs:
           EVENT_PAYLOAD: ${{ toJson(EVENT_PAYLOAD) }}
         run: |
           echo "$EVENT_PAYLOAD"
-
-  notify:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Discord notification
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
-        uses: Ilshidur/action-discord@master
-        with:
-          args: "A pull request to master has been opened: {{ EVENT_PAYLOAD.event.pull_request.html.href }}"
