@@ -1,6 +1,7 @@
 ---
 title: Tools
 description: A collection of helpful tools for Meshtastic
+summary: A collection of helpful tools for Meshtastic
 date: 2024-06-06
 ---
 

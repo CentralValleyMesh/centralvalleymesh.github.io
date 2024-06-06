@@ -12,6 +12,8 @@ Just getting started? You've found the right place! 🌟
 
 So, you just picked up your first Meshtastic device, got it booted up, and... crickets 🦗🦗🦗. Did you misconfigure something? Is no one out there? Did you actually install the right thing(s)? What in the world is going on? This guide aims to get you up and running to make your first contact as soon as possible.
 
+<!-- more -->
+
 No Meshtastic device yet? Check out [the list of supported hardware on the official Meshtastic docs](https://meshtastic.org/docs/hardware/devices/).
 
 ## Flashing Your Device
