@@ -9,6 +9,6 @@ We're working hard to bring you a fantastic online experience! While our website
 
 Click the link below to join us for the latest updates & discussions. We can't wait to see you there!
 
-[Join Our Discord Community](https://discord.com/invite/9KUu5QQqMx)
+[Join Our Discord Community](https://discord.gg/9KUu5QQqMx)
 
 Please check back soon for updates!
