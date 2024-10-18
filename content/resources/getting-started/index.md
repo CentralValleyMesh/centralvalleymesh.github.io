@@ -16,7 +16,9 @@ No Meshtastic device yet? Check out [the list of supported hardware on the offic
 
 ## Flashing Your Device
 
-First of all, make sure you've flashed the current version of Meshtastic using the web flasher at [flasher.meshtastic.org](https://flasher.meshtastic.org/). For more detailed instructions, take a look at [the Meshtastic docs on flashing firmware](https://meshtastic.org/docs/getting-started/flashing-firmware/). If you've changed a bunch of settings or are upgrading from a much older version, it's recommended to select "Full Erase and Install" to ensure no settings are left on the device that may cause issues.
+Before flashing, make sure your device is recognized within device manager on windows or lsusb on linux. If it shows up as "unrecognized" or as "other device", you probably need to install drivers for it. Check the [meshtastic serial drivers page](https://meshtastic.org/docs/getting-started/serial-drivers/) for details on installing the drivers. If the driver is installed correctly, your device will show up under the "ports" tab in device manager.
+
+With the device drivers installed, make sure you've flashed the current version of Meshtastic using the web flasher at [flasher.meshtastic.org](https://flasher.meshtastic.org/). For more detailed instructions, take a look at [the Meshtastic docs on flashing firmware](https://meshtastic.org/docs/getting-started/flashing-firmware/). If you've changed a bunch of settings or are upgrading from a much older version, it's recommended to select "Full Erase and Install" to ensure no settings are left on the device that may cause issues.
 
 ## Connecting to Your Device
 
