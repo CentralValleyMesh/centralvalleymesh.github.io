@@ -1,0 +1,23 @@
+/*
+
+Add styles or override variables from the theme here.
+
+*/
+.home_header {
+    text-shadow: 4px 4px 5px black;
+    font-size: 3.5em;
+}
+
+@media (max-width: 768px) {
+    .home_header {
+        text-shadow: 4px 4px 5px black;
+        font-size: 1.5em;
+    }
+}
+.guidelines-list {
+  text-align: left;
+  padding-left: 1rem;
+  line-height: 1.6;
+  max-width: 800px;
+  margin: 0 auto;
+}
