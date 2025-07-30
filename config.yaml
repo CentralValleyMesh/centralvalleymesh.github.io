@@ -1,19 +1,15 @@
-title: "Central Valley Mesh"
-baseURL: "https://centralvalleymesh.net"
-languageCode: "en-us"
-theme: "ananke"
+# THIS IS A TEST CONFIG ONLY!
+# FOR THE CONFIGURATION OF YOUR SITE USE hugo.yaml.
+#
+# As of Docsy 0.7.0, Hugo 0.110.0 or later must be used.
+#
+# The sole purpose of this config file is to detect Hugo-module builds that use
+# an older version of Hugo.
+#
+# DO NOT add any config parameters to this file. You can safely delete this file
+# if your project is using the required Hugo version.
 
-params:
-  site_logo: "images/central-valley-mesh.png"
-  background_color_class: "bg-black"
-  ananke_socials:
-    - name: github
-      url: https://github.com/CentralValleyMesh/centralvalleymesh.github.io
-    - name: discord
-      url: https://discord.com/invite/9KUu5QQqMx
-
-menus:
-  main:
-    - name: Home
-      pageRef: /
-      weight: 1
+module:
+  hugoVersion:
+    extended: true
+    min: 0.110.0
