@@ -15,7 +15,7 @@ title: Central Valley Mesh
 <a class="btn btn-lg btn-primary me-3 mb-4" href="docs/">
   Read Our Docs &nbsp;<i class="fa-solid fa-book"></i>
 </a>
-<a class="btn btn-lg btn-primary me-3 mb-4" href="blog/">
+<a class="btn btn-lg btn-primary me-3 mb-4" href="builds/">
   Check Out Our Builds &nbsp;<i class="fa-solid fa-screwdriver-wrench"></i>
 </a>
 <a class="btn btn-lg btn-primary me-3 mb-4" href="https://discord.com/invite/9KUu5QQqMx">
