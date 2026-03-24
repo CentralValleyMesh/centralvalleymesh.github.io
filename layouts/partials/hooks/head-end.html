@@ -1,0 +1,73 @@
+{{ if eq .Section "docs" }}
+<style>
+/* Blueprint Grid for Docs */
+body { position: relative; }
+body::before {
+  content: ""; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1;
+  background-image: 
+    linear-gradient(rgba(0, 150, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 150, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(rgba(0, 150, 255, 0.02) 2px, transparent 2px),
+    linear-gradient(90deg, rgba(0, 150, 255, 0.02) 2px, transparent 2px);
+  background-size: 20px 20px, 20px 20px, 100px 100px, 100px 100px;
+  animation: bgMoveDocs 60s linear infinite;
+  pointer-events: none;
+}
+[data-bs-theme="dark"] body::before {
+  background-image: 
+    linear-gradient(rgba(0, 242, 254, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 242, 254, 0.05) 1px, transparent 1px),
+    linear-gradient(rgba(0, 242, 254, 0.02) 2px, transparent 2px),
+    linear-gradient(90deg, rgba(0, 242, 254, 0.02) 2px, transparent 2px);
+}
+@keyframes bgMoveDocs { 0% { background-position: 0 0; } 100% { background-position: 100px 100px; } }
+</style>
+
+{{ else if eq .Section "builds" }}
+<style>
+/* Glowing Orbs for Builds */
+body { position: relative; }
+body::before {
+  content: ""; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1;
+  background: 
+    radial-gradient(circle at 15% 50%, rgba(255, 107, 107, 0.05), transparent 35%),
+    radial-gradient(circle at 85% 30%, rgba(72, 219, 251, 0.05), transparent 35%);
+  animation: orbFloatBuilds 30s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+[data-bs-theme="dark"] body::before {
+  background: 
+    radial-gradient(circle at 15% 50%, rgba(255, 107, 107, 0.1), transparent 35%),
+    radial-gradient(circle at 85% 30%, rgba(72, 219, 251, 0.1), transparent 35%);
+}
+@keyframes orbFloatBuilds { 0% { background-position: 0% 0%; } 100% { background-position: 100px 100px; } }
+</style>
+
+{{ else if eq .Section "community" }}
+<style>
+/* Diagonal Flow for Community */
+body { position: relative; }
+body::before {
+  content: ""; position: fixed; top: -50%; left: -50%; width: 200%; height: 200%; z-index: -1;
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(29, 209, 161, 0.03),
+    rgba(29, 209, 161, 0.03) 30px,
+    transparent 30px,
+    transparent 60px
+  );
+  animation: stripeSlideCommunity 30s linear infinite;
+  pointer-events: none;
+}
+[data-bs-theme="dark"] body::before {
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(29, 209, 161, 0.05),
+    rgba(29, 209, 161, 0.05) 30px,
+    transparent 30px,
+    transparent 60px
+  );
+}
+@keyframes stripeSlideCommunity { 0% { background-position: 0 0; } 100% { background-position: 60px 60px; } }
+</style>
+{{ end }}

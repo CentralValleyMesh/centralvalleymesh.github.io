@@ -1,0 +1,127 @@
+<style>
+.wizard-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 2.5rem;
+  margin-top: 1.5rem;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+}
+[data-bs-theme="light"] .wizard-card {
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+.wizard-step { display: none; }
+.wizard-step.active { display: block; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.option-btn {
+  border: 2px solid #1dd1a1;
+  background: transparent;
+  color: inherit;
+  border-radius: 10px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  width: 100%;
+  text-align: left;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.option-btn:hover { background: rgba(29, 209, 161, 0.1); transform: translateX(5px); }
+.option-btn.selected { background: #1dd1a1; color: #fff; box-shadow: 0 4px 15px rgba(29, 209, 161, 0.4); }
+.cli-box {
+  background: #1e1e1e;
+  color: #a6e22e;
+  font-family: 'Courier New', monospace;
+  padding: 1.5rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin-top: 1rem;
+  position: relative;
+  white-space: pre-wrap;
+}
+.copy-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+</style>
+
+<div class="wizard-card">
+  <div id="step-1" class="wizard-step active">
+    <h3 class="mb-2"><i class="fa-solid fa-microchip me-2 text-primary"></i>Step 1: Select Your Hardware</h3>
+    <p class="text-muted mb-4">What type of board are you configuring for the Central Valley Mesh?</p>
+    <button class="option-btn" onclick="selectOption('hw', 'heltec')"><h4 class="mb-1">Heltec V3 or V2</h4><small class="text-muted">Standard starter board</small></button>
+    <button class="option-btn" onclick="selectOption('hw', 'tbeam')"><h4 class="mb-1">LILYGO T-Beam</h4><small class="text-muted">GPS Tracker node</small></button>
+    <button class="option-btn" onclick="selectOption('hw', 'rak')"><h4 class="mb-1">RAK WisBlock (4631)</h4><small class="text-muted">Ultra-low power solar build</small></button>
+  </div>
+
+  <div id="step-2" class="wizard-step">
+    <h3 class="mb-2"><i class="fa-solid fa-network-wired me-2 text-info"></i>Step 2: Select Node Role</h3>
+    <p class="text-muted mb-4">How will this node be used on the network?</p>
+    <button class="option-btn" onclick="selectOption('role', 'client')"><h4 class="mb-1">Client (Standard)</h4><small class="text-muted">Connected to my phone, moving around with me.</small></button>
+    <button class="option-btn" onclick="selectOption('role', 'router')"><h4 class="mb-1">Router / Repeater</h4><small class="text-muted">Mounted high up, routing network traffic 24/7.</small></button>
+    <button class="option-btn" onclick="selectOption('role', 'tracker')"><h4 class="mb-1">Tracker</h4><small class="text-muted">Reporting GPS periodically (for vehicles/pets).</small></button>
+  </div>
+
+  <div id="step-3" class="wizard-step">
+    <h3 class="mb-2"><i class="fa-solid fa-terminal me-2 text-success"></i>Step 3: Run Your Commands</h3>
+    <p class="text-muted mb-3">Connect your node to your computer via USB, open your terminal, and run these commands sequentially to instantly configure it for the Central Valley Mesh.</p>
+    
+    <div class="cli-box">
+      <button class="btn btn-sm btn-outline-light copy-btn" onclick="copyCLI()">Copy</button>
+      <div id="cli-output">meshtastic --info</div>
+    </div>
+    
+    <button class="btn btn-primary mt-4 rounded-pill px-4" onclick="resetWizard()"><i class="fa-solid fa-rotate-left me-2"></i>Start Over</button>
+  </div>
+</div>
+
+<script>
+let wizardSelections = { hw: '', role: '' };
+
+function selectOption(category, value) {
+  wizardSelections[category] = value;
+  
+  if (category === 'hw') {
+    document.getElementById('step-1').classList.remove('active');
+    document.getElementById('step-2').classList.add('active');
+  } else if (category === 'role') {
+    document.getElementById('step-2').classList.remove('active');
+    generateCLI();
+    document.getElementById('step-3').classList.add('active');
+  }
+}
+
+function generateCLI() {
+  let cli = `meshtastic --set lora.region US --set lora.modem_preset LONG_FAST`;
+  
+  if (wizardSelections.role === 'router') {
+    cli += `\nmeshtastic --set device.role ROUTER_CLIENT`;
+    cli += `\nmeshtastic --set power.is_power_saving true`;
+    if (wizardSelections.hw === 'rak') cli += `\nmeshtastic --set power.wait_bluetooth_secs 1`;
+  } else if (wizardSelections.role === 'tracker') {
+    cli += `\nmeshtastic --set device.role TRACKER`;
+    cli += `\nmeshtastic --set position.position_broadcast_secs 600`;
+  } else {
+    cli += `\nmeshtastic --set device.role CLIENT`;
+  }
+  
+  cli += `\nmeshtastic --set bluetooth.enabled true`;
+  
+  document.getElementById('cli-output').innerText = cli;
+}
+
+function copyCLI() {
+  const text = document.getElementById('cli-output').innerText;
+  navigator.clipboard.writeText(text);
+  const btn = document.querySelector('.copy-btn');
+  btn.innerText = "Copied!";
+  setTimeout(() => { btn.innerText = "Copy"; }, 2000);
+}
+
+function resetWizard() {
+  wizardSelections = { hw: '', role: '' };
+  document.getElementById('step-3').classList.remove('active');
+  document.getElementById('step-1').classList.add('active');
+}
+</script>

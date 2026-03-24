@@ -58,3 +58,8 @@ hugo.linux
 # NodeJS exclusions
 node_modules/
 package-lock.json
+*.bat
+m*.txt
+out.txt
+stats.json
+temp_remote_repo

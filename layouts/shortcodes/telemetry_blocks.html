@@ -1,0 +1,75 @@
+{{/* 
+  Allows operators to toggle the telemetry blocks on and off via the data/telemetry.json file. 
+  When 'show' is true, this fetches live nodes stats. If false, it renders nothing.
+*/}}
+{{ if site.Data.telemetry.show }}
+  <div class="front-container mt-5 mb-5 px-3">
+    <div class="row text-center g-4">
+      <div class="col-md-3 col-6">
+        <div class="glass-card p-4">
+          <i class="fa-solid fa-tower-broadcast fa-3x mb-3 text-info w-100"></i>
+          <h2 class="display-5 fw-bold mb-0 tele-active-nodes" style="color: inherit;">--</h2>
+          <p class="text-muted text-uppercase small fw-bold tracking-widest mt-2">Active Nodes</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="glass-card p-4">
+          <i class="fa-solid fa-satellite-dish fa-3x mb-3 text-success w-100"></i>
+          <h2 class="display-5 fw-bold mb-0 tele-messages" style="color: inherit;">--</h2>
+          <p class="text-muted text-uppercase small fw-bold tracking-widest mt-2">Total Messages</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="glass-card p-4">
+          <i class="fa-solid fa-network-wired fa-3x mb-3 text-warning w-100"></i>
+          <h2 class="display-5 fw-bold mb-0 tele-total-nodes" style="color: inherit;">--</h2>
+          <p class="text-muted text-uppercase small fw-bold tracking-widest mt-2">Total Nodes</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="glass-card p-4">
+          <i class="fa-solid fa-bolt fa-3x mb-3 text-danger w-100"></i>
+          <h2 class="display-5 fw-bold mb-0 tele-telemetry" style="color: inherit;">--</h2>
+          <p class="text-muted text-uppercase small fw-bold tracking-widest mt-2">Total Telemetry</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", function() {
+    function formatNumber(num) {
+      if (num >= 1000) {
+        return (num / 1000).toFixed(1) + 'k';
+      }
+      return num;
+    }
+
+    function updateTelemetry() {
+      const targetUrl = 'https://meshinfo.cvme.sh/api/v1/stats';
+      const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(targetUrl);
+      
+      fetch(proxyUrl)
+        .then(response => response.json())
+        .then(data => {
+          const stats = data.stats;
+          if (!stats) return;
+          
+          const activeNodes = document.querySelector('.tele-active-nodes');
+          const messages = document.querySelector('.tele-messages');
+          const totalNodes = document.querySelector('.tele-total-nodes');
+          const telemetry = document.querySelector('.tele-telemetry');
+          
+          if (activeNodes) activeNodes.innerText = formatNumber(stats.active_nodes);
+          if (messages) messages.innerText = formatNumber(stats.total_messages);
+          if (totalNodes) totalNodes.innerText = formatNumber(stats.total_nodes);
+          if (telemetry) telemetry.innerText = formatNumber(stats.total_telemetry);
+        })
+        .catch(error => console.error('Error fetching CV Mesh telemetry:', error));
+    }
+    
+    updateTelemetry();
+    setInterval(updateTelemetry, 60000);
+  });
+  </script>
+{{ end }}

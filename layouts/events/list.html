@@ -1,0 +1,58 @@
+{{ define "main" }}
+<div class="td-content">
+  <div class="mb-5 pb-3 border-bottom">
+    <h1 class="display-4 fw-bold">{{ .Title }}</h1>
+    <div class="lead text-muted">{{ .Content }}</div>
+  </div>
+
+  <div class="mt-5">
+    {{ if not .Pages }}
+      <p class="text-muted text-center pt-5"><i>There are currently no planned events.</i></p>
+    {{ else }}
+      {{ range .Pages.ByDate.Reverse }}
+        <article class="card mb-5 shadow-sm border-0" style="border-radius: 16px; overflow: hidden;">
+          <div class="card-body p-5">
+            <h2 class="card-title mb-2">
+              <a href="{{ .Permalink }}" class="text-decoration-none" style="color: inherit;">{{ .Title }}</a>
+            </h2>
+            
+            {{/* Escape SUMMARY (title) for ICS: backslash, semicolon, comma, newline */}}
+            {{ $summary := .Title | replace "\\" "\\\\" | replace ";" "\\;" | replace "," "\\," | replaceRE "\r?\n" "\\n" }}
+            {{/* Use permalink as UID source, escaped for ICS */}}
+            {{ $uidRaw := .Permalink }}
+            {{ $uid := $uidRaw | replace "\\" "\\\\" | replace ";" "\\;" | replace "," "\\," | replaceRE "\r?\n" "\\n" }}
+            {{/* DESCRIPTION with URL, escaped for ICS */}}
+            {{ $descriptionRaw := printf "View full event details at: %s" .Permalink }}
+            {{ $description := $descriptionRaw | replace "\\" "\\\\" | replace ";" "\\;" | replace "," "\\," | replaceRE "\r?\n" "\\n" }}
+            {{/* Event start/end using actual time; DTEND kept as +1 day like before */}}
+            {{ $dtstart := .Date.Format "20060102T150405" }}
+            {{ $dtend := .Date.AddDate 0 0 1 | time.Format "20060102T150405" }}
+            {{/* DTSTAMP in UTC as required by RFC 5545 */}}
+            {{ $dtstamp := now.UTC.Format "20060102T150405Z" }}
+            {{/* Build ICS with CRLF line endings */}}
+            {{ $ics := printf "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//%s//EN\r\nBEGIN:VEVENT\r\nUID:%s\r\nDTSTAMP:%s\r\nSUMMARY:%s\r\nDTSTART:%s\r\nDTEND:%s\r\nURL:%s\r\nDESCRIPTION:%s\r\nEND:VEVENT\r\nEND:VCALENDAR" .Site.Title $uid $dtstamp $summary $dtstart $dtend .Permalink $description }}
+            {{ $icsDataUri := printf "data:text/calendar;charset=utf8,%s" ($ics | urlquery | replaceRE "\\+" "%20") }}
+
+            <p class="small mb-4">
+              <a href="{{ $icsDataUri | safeURL }}" download="{{ .File.ContentBaseName | default "event" }}.ics" class="text-decoration-none badge rounded-pill bg-light text-dark border p-2 shadow-sm" style="transition: all 0.2s;" title="Download Calendar Invite">
+                <i class="fa-solid fa-calendar-plus me-2 text-primary"></i>{{ .Date.Format "January 2, 2006" }} 
+                <span class="text-muted ms-1 fw-normal text-lowercase">(click to add to calendar)</span>
+              </a>
+            </p>
+            
+            <hr class="mb-4">
+            
+            <div class="card-text content-full" style="font-size: 1.1rem; line-height: 1.8;">
+              {{ .Content }}
+            </div>
+            
+            <div class="mt-4 pt-3 border-top">
+              <a href="{{ .Permalink }}" class="btn btn-outline-primary rounded-pill">Permanent Link to Event</a>
+            </div>
+          </div>
+        </article>
+      {{ end }}
+    {{ end }}
+  </div>
+</div>
+{{ end }}

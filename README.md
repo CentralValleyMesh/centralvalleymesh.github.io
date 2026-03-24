@@ -9,3 +9,4 @@ The site is created using [Hugo](https://gohugo.io) framework, is using the [Doc
 To make changes to this site, please submit a PR.
 
 For administration assistance, please connect with us in our [Discord Community](https://discord.gg/9KUu5QQqMx) in the website channel.
+

@@ -1,0 +1,42 @@
+<div class="mt-5 mb-5">
+  <div class="d-flex justify-content-between align-items-end mb-4">
+    <div>
+      <h2 class="display-6 fw-bold mb-0">Recent User Builds</h2>
+      <p class="mt-2 mb-0 text-muted">Check out what the community is building</p>
+    </div>
+    <a href="{{ "builds/" | relURL }}" class="btn btn-outline-primary rounded-pill px-4">See All</a>
+  </div>
+  <div class="row g-4">
+    {{ $builds := where .Site.RegularPages.ByDate.Reverse "Section" "builds" }}
+    {{ if $builds }}
+      {{ range first 3 $builds }}
+      <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm" style="border-radius: 16px; overflow: hidden; transition: transform 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+          <div class="card-body p-4 text-center">
+            <h5 class="card-title fw-bold mb-3">
+              <a href="{{ .RelPermalink }}" class="text-decoration-none" style="color: inherit;">{{ .Title }}</a>
+            </h5>
+            <p class="card-text" style="font-size: 0.95rem; opacity: 0.8;">{{ .Summary | plainify | truncate 100 }}</p>
+            <a href="{{ .RelPermalink }}" class="btn btn-sm btn-primary rounded-pill mt-3 px-4 shadow-sm" style="background: linear-gradient(135deg, #0061ff 0%, #60efff 100%); border: none;">View Build</a>
+          </div>
+        </div>
+      </div>
+      {{ end }}
+    {{ else }}
+      <div class="col-12 text-center text-muted">
+        <div class="p-5 bg-light rounded-4">
+          <i class="fa-solid fa-screwdriver-wrench fa-3x mb-3 text-secondary"></i>
+          <h4>No builds showcased yet</h4>
+          <p>Be the first to share your Meshtastic node build with the community!</p>
+          <a href="https://discord.gg/UfWSrQMFp9" class="btn btn-primary rounded-pill mt-2">Share on Discord</a>
+        </div>
+      </div>
+    {{ end }}
+  </div>
+  <style>
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 25px rgba(0,0,0,0.1) !important;
+    }
+  </style>
+</div>
