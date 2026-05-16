@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Node Config Wizard — Central Valley Mesh</title>
+  <meta name="description" content="Interactive Meshtastic node configuration generator for the Central Valley Mesh network." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="icon" href="../favicon.ico" sizes="32x32" />
+  <link rel="icon" href="../images/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png" />
+  <style>
+    .inner-hero { padding:calc(var(--nav-h) + 48px) 0 40px; border-bottom:1px solid var(--border); }
+    .inner-hero h1 { font-size:clamp(26px,4vw,44px); margin-bottom:12px; }
+    .inner-hero p  { font-size:15px; color:var(--muted); max-width:580px; font-weight:300; line-height:1.75; }
+
+    .wizard-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      padding: 40px 0 80px;
+      align-items: start;
+    }
+
+    /* ── Form ── */
+    .wizard-form { display:flex; flex-direction:column; gap:14px; }
+
+    .field-group { background:var(--card); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; }
+
+    .field-group-header {
+      background:rgba(129,140,248,.05); border-bottom:1px solid var(--border);
+      padding:10px 18px; display:flex; align-items:center; justify-content:space-between;
+    }
+    .fg-label { font-family:var(--font-mono); font-size:10px; letter-spacing:.16em; color:var(--orange); text-transform:uppercase; }
+    .fg-note  { font-family:var(--font-mono); font-size:9px; color:var(--dim); letter-spacing:.06em; }
+
+    .fields { padding:2px 0; }
+
+    .field {
+      display:flex; align-items:flex-start; justify-content:space-between;
+      padding:9px 18px; border-bottom:1px solid rgba(255,255,255,.04); gap:10px;
+    }
+    .field:last-child { border-bottom:none; }
+
+    .field-label { font-size:13px; color:var(--text); flex:1; padding-top:2px; }
+    .field-hint  { font-size:11px; color:var(--dim); display:block; margin-top:2px; line-height:1.5; }
+
+    .field select,
+    .field input[type="text"],
+    .field input[type="number"] {
+      background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius);
+      color:var(--text); font-family:var(--font-mono); font-size:12px;
+      padding:5px 9px; width:190px; flex-shrink:0;
+      transition:border-color .2s; outline:none;
+    }
+    .field select:focus, .field input:focus { border-color:rgba(129,140,248,.5); }
+
+    .field input[type="checkbox"] {
+      width:18px; height:18px; accent-color:var(--orange); cursor:pointer;
+      flex-shrink:0; margin-top:3px;
+    }
+
+    /* Role description tooltip */
+    .role-desc {
+      font-size:11px; color:var(--cyan); display:block; margin-top:4px;
+      font-family:var(--font-mono); letter-spacing:.03em;
+    }
+
+    /* ── Output sticky panel ── */
+    .wizard-output { position:sticky; top:calc(var(--nav-h) + 20px); display:flex; flex-direction:column; gap:12px; }
+
+    .out-card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; }
+
+    .out-header {
+      background:rgba(129,140,248,.07); border-bottom:1px solid var(--border);
+      padding:10px 18px; display:flex; align-items:center; justify-content:space-between;
+    }
+    .out-title {
+      font-family:var(--font-mono); font-size:10px; letter-spacing:.14em; color:var(--orange);
+      text-transform:uppercase; display:flex; align-items:center; gap:7px;
+    }
+    .out-title::before { content:''; width:6px; height:6px; background:var(--orange); border-radius:50%; animation:blink 1.4s ease-in-out infinite; }
+
+    .copy-btn { background:none; border:1px solid var(--border); border-radius:var(--radius); color:var(--muted); font-family:var(--font-mono); font-size:10px; letter-spacing:.08em; padding:4px 12px; cursor:pointer; transition:color .2s,border-color .2s; }
+    .copy-btn:hover  { color:var(--orange); border-color:rgba(129,140,248,.4); }
+    .copy-btn.copied { color:var(--green); border-color:rgba(50,240,50,.4); }
+
+    .out-body { padding:16px 18px; font-family:var(--font-mono); font-size:12px; line-height:2.1; color:var(--muted); }
+    .out-sec  { color:var(--dim); font-size:10px; letter-spacing:.18em; text-transform:uppercase; margin:12px 0 3px; display:block; }
+    .out-sec:first-child { margin-top:0; }
+    .out-row  { display:flex; gap:8px; }
+    .out-key  { color:var(--cyan); min-width:160px; flex-shrink:0; }
+    .out-val  { color:var(--text); word-break:break-all; }
+    .out-val.g  { color:var(--green); }
+    .out-val.o  { color:var(--orange); }
+    .out-val.d  { color:var(--dim); }
+
+    /* CLI terminal */
+    .cli-card { background:var(--bg); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; }
+    .cli-top { background:rgba(255,255,255,.03); border-bottom:1px solid var(--border); padding:9px 16px; display:flex; align-items:center; justify-content:space-between; }
+    .cli-dots { display:flex; gap:5px; }
+    .cli-dot { width:10px; height:10px; border-radius:50%; }
+    .dr { background:#ff5f57; } .dy { background:#ffbd2e; } .dg { background:#28ca41; }
+    .cli-name { font-family:var(--font-mono); font-size:10px; color:var(--dim); letter-spacing:.08em; }
+    .cli-body { padding:12px 16px; font-family:var(--font-mono); font-size:11.5px; line-height:2; color:var(--muted); overflow-x:auto; }
+    .cp { color:var(--green); }
+    .ck { color:var(--text); }
+    .cf { color:var(--orange); }
+    .cv { color:var(--cyan); }
+    .cc { color:var(--dim); }
+
+    /* Notes */
+    .wizard-note { background:rgba(129,140,248,.06); border-left:3px solid var(--orange); border-radius:0 var(--radius) var(--radius) 0; padding:10px 14px; font-size:14px; color:var(--muted); line-height:1.65; }
+    .wizard-note strong { color:var(--orange); }
+    .wizard-note a { color:var(--orange2); }
+
+    .wizard-note.info { border-left-color: var(--cyan); background:rgba(34,211,238,.05); }
+    .wizard-note.info strong { color:var(--cyan); }
+
+    @media (max-width:960px) {
+      .wizard-layout { grid-template-columns:1fr; }
+      .wizard-output { position:static; }
+      .field select, .field input[type="text"], .field input[type="number"] { width:160px; }
+    }
+    @media (max-width:600px) {
+      .field { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .field select,
+      .field input[type="text"],
+      .field input[type="number"] { width: 100%; }
+      .field input[type="checkbox"] { margin-top: 0; }
+      .wizard-layout { padding: 24px 0 60px; }
+    }
+  </style>
+  <link rel="canonical" href="https://centralvalleymesh.net/docs/faq" />
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">
+      <svg class="nav-logo-icon" viewBox="0 0 34 34" fill="none"><circle cx="17" cy="17" r="4" fill="#818cf8"/><circle cx="17" cy="17" r="9" stroke="#818cf8" stroke-width="1.5" opacity="0.55"/><circle cx="17" cy="17" r="15" stroke="#818cf8" stroke-width="1" opacity="0.25"/></svg>
+      <div class="nav-logo-text">Central Valley Mesh<span>Meshtastic Community</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../about.html">About</a></li>
+      <li class="nav-has-dropdown" id="dd-docs">
+        <button class="nav-dropdown-trigger" onclick="toggleNav('dd-docs')">Docs<svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="nav-dropdown">
+          <a href="../docs.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Documentation</a>
+          <div class="dd-divider"></div>
+          <span class="dd-section-label">Guides</span>
+          <a href="../docs/getting-started.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Getting Started</a>
+          <a href="../docs/faq.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>FAQ</a>
+          <a href="../docs/tools.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Tools</a>
+          <a href="../docs/config-wizard.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>Config Wizard</a>
+</div>
+      </li>
+      <li class="nav-has-dropdown" id="dd-community">
+        <button class="nav-dropdown-trigger" onclick="toggleNav('dd-community')">Community<svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="nav-dropdown">
+          <a href="../community.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Overview</a>
+          <div class="dd-divider"></div>
+          <a href="../builds.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Builds</a>
+          <a href="../events.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Events</a>
+          <a href="../bounties.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Bounty Board</a>
+          <div class="dd-divider"></div>
+          <a href="../contribute.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>Contribute</a>
+</div>
+      </li>
+      <li><a href="../stats.html">Stats</a></li>
+      <li><a href="../map.html">Map</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+      <li><a href="https://discord.com/invite/9KUu5QQqMx" target="_blank" class="nav-discord" rel="noopener noreferrer">Discord</a></li>
+    </ul>
+    <button class="theme-toggle" aria-label="Toggle theme"><svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div id="mobile-menu">
+  <a href="../about.html" class="mob-link">About</a>
+  <div class="mob-section" id="mob-docs">
+    <button class="mob-section-trigger" onclick="toggleMobSection('mob-docs')">Docs<svg class="mob-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button>
+    <div class="mob-sub">
+      <a href="../docs.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Documentation</a>
+      <a href="../docs/getting-started.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Getting Started</a>
+      <a href="../docs/faq.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>FAQ</a>
+      <a href="../docs/tools.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Tools</a>
+      <a href="../docs/config-wizard.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>Config Wizard</a>
+    </div>
+  </div>
+  <div class="mob-section" id="mob-community">
+    <button class="mob-section-trigger" onclick="toggleMobSection('mob-community')">Community<svg class="mob-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button>
+    <div class="mob-sub">
+      <a href="../community.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Overview</a>
+      <a href="../builds.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Builds</a>
+      <a href="../events.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Events</a>
+      <a href="../bounties.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Bounty Board</a>
+      <a href="../contribute.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>Contribute</a>
+    </div>
+  </div>
+  <a href="../stats.html" class="mob-link">Stats</a>
+  <a href="../map.html" class="mob-link">Map</a>
+  <a href="../contact.html" class="mob-link">Contact</a>
+  <div class="mob-divider"></div>
+  <a href="https://discord.com/invite/9KUu5QQqMx" target="_blank" class="mob-discord" rel="noopener noreferrer"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>Join Discord</a>
+</div>
+
+
+<div class="container">
+  <div class="inner-hero" style="padding:calc(var(--nav-h) + 40px) 0 44px;border-bottom:1px solid var(--border)">
+    <div class="breadcrumb"><a href="../docs.html">Docs</a> / FAQ</div>
+    <div class="section-label">// Common Questions</div>
+    <h1 style="font-size:clamp(26px,5vw,48px);margin-bottom:16px">FAQ</h1>
+    <p style="font-size:16px;color:var(--muted);max-width:560px;font-weight:300;line-height:1.75">Answers to the most common questions about Meshtastic and the Central Valley Mesh network.</p>
+  </div>
+
+  <div class="page-section">
+    <style>
+      .faq-section-title{font-family:var(--font-head);font-size:14px;letter-spacing:.08em;color:var(--orange);margin:40px 0 16px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+      .faq-item{border-bottom:1px solid var(--border)}
+      .faq-item:last-child{border-bottom:none}
+      .faq-btn{width:100%;text-align:left;padding:18px 0;display:flex;justify-content:space-between;align-items:center;background:none;border:none;cursor:pointer;font-size:15px;font-weight:600;color:var(--text);gap:12px;font-family:var(--font-body)}
+      .faq-btn:hover{color:var(--orange)}
+      .faq-chevron{width:16px;height:16px;flex-shrink:0;transition:transform .2s;color:var(--dim)}
+      .faq-btn.open .faq-chevron{transform:rotate(180deg)}
+      .faq-answer{display:none;padding:0 0 18px;font-size:14px;color:var(--muted);line-height:1.8}
+      .faq-answer.open{display:block}
+      .faq-answer a{color:var(--orange)}
+      .faq-answer strong{color:var(--text)}
+      .faq-answer code{font-family:var(--font-mono);font-size:12px;color:var(--cyan);background:var(--bg2);padding:2px 6px;border-radius:3px}
+    </style>
+
+    <div class="faq-section-title">// Getting Started</div>
+
+    <div class="faq-list">
+
+      <div class="faq-item">
+        <button class="faq-btn" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">What is Meshtastic?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="faq-answer">Meshtastic is open-source software that turns inexpensive LoRa radio hardware into a self-healing encrypted mesh network. Devices relay messages for each other — the more nodes in an area, the further messages travel. No internet, cell towers, or monthly fees required.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-btn" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">How much does hardware cost?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="faq-answer">A basic node (LILYGO T-Beam or Heltec V3) costs $20–45 on Amazon or AliExpress. You don't need a license to operate on the 915 MHz ISM band in the US — no FCC license required. The software is free and open source.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-btn" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Do I need a ham radio license?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="faq-answer">No. Meshtastic operates on the 915 MHz ISM band — the same unlicensed band used by garage door openers, baby monitors, and many consumer devices. No FCC license is needed. Just pick up a device and you're legal to operate.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-btn" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">How do I add my node to the CVM network?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="faq-answer">Set your region to <strong>US</strong> and modem preset to <strong>LongFast</strong> (or <strong>MediumFast</strong> if that's what your local nodes use — check in Discord) — that's it. Your node will automatically hear and connect to any nearby CVM nodes. See the <a href="../docs/getting-started.html">Getting Started guide</a> for the full setup walkthrough.</div>
+      </div>
+
+    </div>
+
+    <div class="faq-section-title">// Configuration</div>
+
+    <div class="faq-list">
+
+      <div class="faq-item">
+        <button class="faq-btn" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">What device roles should I use?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="faq-answer"><strong>CLIENT</strong> — handheld or portable use. Limited rebroadcast.<br><br><strong>CLIENT</strong> — standard home node. Can send messages and relay packets. Good for most fixed home setups.<br><br><strong>ROUTER</strong> — high-elevation infrastructure only. Maximum rebroadcast. Do not use unless you are intentionally running a hilltop or tower node.<br><br><strong>REPEATER</strong> — silent repeater only. No originating messages. For solar/remote nodes.<br><br><strong>CLIENT_MUTE</strong> — receives packets but does not rebroadcast or originate messages. For sensors.<br><br>When in doubt use <strong>CLIENT</strong>. Ask in <a href="https://discord.com/invite/9KUu5QQqMx" target="_blank" rel="noopener noreferrer">Discord</a> if you're not sure what's right for your situation.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-btn" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">How do I appear on the MeshInfo map?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="faq-answer">Enable <strong>OK to MQTT</strong> in Radio Config → LoRa. This allows gateway nodes to forward your packets to the CVM MeshInfo server. You also need either GPS position data or a fixed position set. Your node should appear on the map within a few minutes of being heard by a gateway.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-btn" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">What is "OK to MQTT"?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="faq-answer">"OK to MQTT" is a flag on your node that tells gateway nodes whether they're allowed to forward your packets to an internet-connected MQTT broker. If it's off, your node will still participate in the radio mesh but won't appear on internet-connected dashboards like MeshInfo. Enable it if you want to show up on the live map and stats.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-btn" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Why shouldn't I change the modem preset?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="faq-answer">Most CVM nodes run <strong>LongFast</strong>, and <strong>MediumFast</strong> is also used in some areas. If you change to a completely different preset (LongSlow, ShortFast, etc.), your node will not hear nodes on those presets. Stick to LongFast unless you know the nodes in your area use MediumFast — check in Discord.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-btn" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">How do I use the CLI for configuration?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="faq-answer">Install the Python CLI: <code>pip install meshtastic</code>. Then connect via USB: <code>meshtastic --port /dev/ttyUSB0 --info</code>. Or over WiFi/Bluetooth: <code>meshtastic --host 192.168.x.x --info</code>. Use the <a href="../docs/config-wizard.html">Config Wizard</a> to generate the exact commands for your setup.</div>
+      
+      <div class="faq-item">
+        <button class="faq-btn" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">How do I set a fixed position?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="faq-answer">Go to <strong>Device Config → Position</strong> and enable <strong>Fixed Position</strong>. Enter your latitude, longitude, and altitude. This is ideal for nodes that don't move — home stations, hilltop repeaters — since they won't consume GPS power and will still appear on the map with a correct location.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-btn" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">What hop limit should I use?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="faq-answer">The default of <strong>3 hops</strong> is what CVM uses and it's correct for most deployments. Higher hop limits cause more radio traffic and network congestion without proportional benefit. Don't increase it unless you have a specific reason — most of the valley is reachable in 3 hops or fewer.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-btn" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Can I use Meshtastic with a ham radio license for more power?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="faq-answer">Meshtastic uses frequency hopping spread spectrum (FHSS) which is a Part 15 unlicensed operation — you cannot use a ham license to increase transmit power on the 915 MHz ISM band. The maximum ISM TX power is around 30 dBm (1W). A better antenna is the legal and effective way to extend range.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-btn" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">What's the difference between channel and modem preset?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="faq-answer">The <strong>modem preset</strong> (LongFast, LongSlow, etc.) controls the physical radio parameters — bandwidth, spreading factor, coding rate. The <strong>channel</strong> is a named logical group with an encryption key. CVM primarily uses LongFast, with MediumFast in some areas. The primary channel is the default on both presets. You can add secondary channels for private group messaging without changing the modem preset.</div>
+      </div>
+
+
+    <div class="faq-section-title">// Troubleshooting</div>
+
+    <div class="faq-list">
+
+      <div class="faq-item">
+        <button class="faq-btn" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">My node isn&apos;t hearing any other nodes. What&apos;s wrong?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="faq-answer">Check these in order: (1) Confirm modem preset is <strong>LongFast</strong> or <strong>MediumFast</strong> and region is <strong>US</strong>. (2) Make sure an antenna is physically connected — transmitting without one can damage the radio. (3) Move near a window or go outside — 915 MHz doesn&apos;t penetrate buildings well. (4) Check the <a href="https://meshinfo.cvme.sh/map" target="_blank" rel="noopener noreferrer">live map</a> to see if any CVM nodes are near you.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-btn" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">My node shows on the app but not on the CVM map. Why?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="faq-answer">Two likely causes: (1) <strong>OK to MQTT</strong> is disabled — enable it in Radio Config &rarr; LoRa. (2) Your node has no position set — either GPS hasn&apos;t locked yet, or you need to set a fixed position manually. The map only shows nodes that have reported a location to the MQTT broker.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-btn" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">The web flasher can&apos;t find my device over USB.<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="faq-answer">Most common cause: charge-only USB cable. Try a different cable known to carry data. Use Chrome or Edge — Firefox doesn&apos;t support Web Serial. On Linux you may need: <code>sudo usermod -a -G dialout $USER</code> then log out and back in.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-btn" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">My T-Beam keeps rebooting. What&apos;s happening?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="faq-answer">T-Beam brownouts are usually power-related. The 18650 cell may be too low or the USB supply can&apos;t source enough current during TX spikes. Try: a higher-amperage supply (2A+), a fresh 18650, or reducing TX power in Radio Config. Disabling WiFi also helps if you&apos;re not using MQTT over WiFi.</div>
+      </div>
+
+    </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <svg width="20" height="20" viewBox="0 0 34 34" fill="none"><circle cx="17" cy="17" r="4" fill="#818cf8"/><circle cx="17" cy="17" r="9" stroke="#818cf8" stroke-width="1.5" opacity="0.55"/><circle cx="17" cy="17" r="15" stroke="#818cf8" stroke-width="1" opacity="0.25"/></svg>
+        <span>Central Valley Mesh</span>
+      </div>
+      <div class="footer-links">
+        <a href="../about.html">About</a>
+        <a href="../docs.html">Docs</a>
+        <a href="../community.html">Community</a>
+        <a href="../builds.html">Builds</a>
+        <a href="../events.html">Events</a>
+        <a href="../bounties.html">Bounties</a>
+        <a href="../stats.html">Stats</a>
+        <a href="../map.html">Map</a>
+        <a href="../contact.html">Contact</a>
+        <a href="../contribute.html">Contribute</a>
+        <a href="../found.html">Found a Node?</a>
+        <a href="https://discord.com/invite/9KUu5QQqMx" target="_blank" rel="noopener noreferrer">Discord</a>
+        <a href="https://github.com/CentralValleyMesh/centralvalleymesh.github.io" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </div>
+      <p class="footer-copy">&copy; 2018&#8211;2026 Central Valley Mesh &nbsp;&middot;&nbsp; <a href="https://creativecommons.org/licenses/by/4.0" target="_blank" style="color:inherit" rel="noopener noreferrer">CC BY 4.0</a></p>
+    </div>
+  </div>
+</footer>
+
+<script src="../js/main.js"></script>
+</body>
+</html>

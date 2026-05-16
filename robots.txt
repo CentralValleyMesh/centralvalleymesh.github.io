@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Don't index the found page (QR landing, not useful in search)
+Disallow: /found
+
+Sitemap: https://centralvalleymesh.net/sitemap.xml

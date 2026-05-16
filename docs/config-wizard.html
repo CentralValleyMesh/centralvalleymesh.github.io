@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Node Config Wizard — Central Valley Mesh</title>
+  <meta name="description" content="Interactive Meshtastic node configuration generator for the Central Valley Mesh network." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="icon" href="../favicon.ico" sizes="32x32" />
+  <link rel="icon" href="../images/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png" />
+  <style>
+    .inner-hero { padding:calc(var(--nav-h) + 48px) 0 40px; border-bottom:1px solid var(--border); }
+    .inner-hero h1 { font-size:clamp(26px,4vw,44px); margin-bottom:12px; }
+    .inner-hero p  { font-size:15px; color:var(--muted); max-width:580px; font-weight:300; line-height:1.75; }
+
+    .wizard-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      padding: 40px 0 80px;
+      align-items: start;
+    }
+
+    /* ── Form ── */
+    .wizard-form { display:flex; flex-direction:column; gap:14px; }
+
+    .field-group { background:var(--card); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; }
+
+    .field-group-header {
+      background:rgba(129,140,248,.05); border-bottom:1px solid var(--border);
+      padding:10px 18px; display:flex; align-items:center; justify-content:space-between;
+    }
+    .fg-label { font-family:var(--font-mono); font-size:10px; letter-spacing:.16em; color:var(--orange); text-transform:uppercase; }
+    .fg-note  { font-family:var(--font-mono); font-size:9px; color:var(--dim); letter-spacing:.06em; }
+
+    .fields { padding:2px 0; }
+
+    .field {
+      display:flex; align-items:flex-start; justify-content:space-between;
+      padding:9px 18px; border-bottom:1px solid rgba(255,255,255,.04); gap:10px;
+    }
+    .field:last-child { border-bottom:none; }
+
+    .field-label { font-size:13px; color:var(--text); flex:1; padding-top:2px; }
+    .field-hint  { font-size:11px; color:var(--dim); display:block; margin-top:2px; line-height:1.5; }
+
+    .field select,
+    .field input[type="text"],
+    .field input[type="number"] {
+      background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius);
+      color:var(--text); font-family:var(--font-mono); font-size:12px;
+      padding:5px 9px; width:190px; flex-shrink:0;
+      transition:border-color .2s; outline:none;
+    }
+    .field select:focus, .field input:focus { border-color:rgba(129,140,248,.5); }
+
+    .field input[type="checkbox"] {
+      width:18px; height:18px; accent-color:var(--orange); cursor:pointer;
+      flex-shrink:0; margin-top:3px;
+    }
+
+    /* Role description tooltip */
+    .role-desc {
+      font-size:11px; color:var(--cyan); display:block; margin-top:4px;
+      font-family:var(--font-mono); letter-spacing:.03em;
+    }
+
+    /* ── Output sticky panel ── */
+    .wizard-output { position:sticky; top:calc(var(--nav-h) + 20px); display:flex; flex-direction:column; gap:12px; }
+
+    .out-card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; }
+
+    .out-header {
+      background:rgba(129,140,248,.07); border-bottom:1px solid var(--border);
+      padding:10px 18px; display:flex; align-items:center; justify-content:space-between;
+    }
+    .out-title {
+      font-family:var(--font-mono); font-size:10px; letter-spacing:.14em; color:var(--orange);
+      text-transform:uppercase; display:flex; align-items:center; gap:7px;
+    }
+    .out-title::before { content:''; width:6px; height:6px; background:var(--orange); border-radius:50%; animation:blink 1.4s ease-in-out infinite; }
+
+    .copy-btn { background:none; border:1px solid var(--border); border-radius:var(--radius); color:var(--muted); font-family:var(--font-mono); font-size:10px; letter-spacing:.08em; padding:4px 12px; cursor:pointer; transition:color .2s,border-color .2s; }
+    .copy-btn:hover  { color:var(--orange); border-color:rgba(129,140,248,.4); }
+    .copy-btn.copied { color:var(--green); border-color:rgba(50,240,50,.4); }
+
+    .out-body { padding:16px 18px; font-family:var(--font-mono); font-size:12px; line-height:2.1; color:var(--muted); }
+    .out-sec  { color:var(--dim); font-size:10px; letter-spacing:.18em; text-transform:uppercase; margin:12px 0 3px; display:block; }
+    .out-sec:first-child { margin-top:0; }
+    .out-row  { display:flex; gap:8px; }
+    .out-key  { color:var(--cyan); min-width:160px; flex-shrink:0; }
+    .out-val  { color:var(--text); word-break:break-all; }
+    .out-val.g  { color:var(--green); }
+    .out-val.o  { color:var(--orange); }
+    .out-val.d  { color:var(--dim); }
+
+    /* CLI terminal */
+    .cli-card { background:var(--bg); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; }
+    .cli-top { background:rgba(255,255,255,.03); border-bottom:1px solid var(--border); padding:9px 16px; display:flex; align-items:center; justify-content:space-between; }
+    .cli-dots { display:flex; gap:5px; }
+    .cli-dot { width:10px; height:10px; border-radius:50%; }
+    .dr { background:#ff5f57; } .dy { background:#ffbd2e; } .dg { background:#28ca41; }
+    .cli-name { font-family:var(--font-mono); font-size:10px; color:var(--dim); letter-spacing:.08em; }
+    .cli-body { padding:12px 16px; font-family:var(--font-mono); font-size:11.5px; line-height:2; color:var(--muted); overflow-x:auto; }
+    .cp { color:var(--green); }
+    .ck { color:var(--text); }
+    .cf { color:var(--orange); }
+    .cv { color:var(--cyan); }
+    .cc { color:var(--dim); }
+
+    /* Notes */
+    .wizard-note { background:rgba(129,140,248,.06); border-left:3px solid var(--orange); border-radius:0 var(--radius) var(--radius) 0; padding:10px 14px; font-size:14px; color:var(--muted); line-height:1.65; }
+    .wizard-note strong { color:var(--orange); }
+    .wizard-note a { color:var(--orange2); }
+
+    .wizard-note.info { border-left-color: var(--cyan); background:rgba(34,211,238,.05); }
+    .wizard-note.info strong { color:var(--cyan); }
+
+    @media (max-width:960px) {
+      .wizard-layout { grid-template-columns:1fr; }
+      .wizard-output { position:static; }
+      .field select, .field input[type="text"], .field input[type="number"] { width:160px; }
+    }
+    @media (max-width:600px) {
+      .field { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .field select,
+      .field input[type="text"],
+      .field input[type="number"] { width: 100%; }
+      .field input[type="checkbox"] { margin-top: 0; }
+      .wizard-layout { padding: 24px 0 60px; }
+    }
+  </style>
+  <link rel="canonical" href="https://centralvalleymesh.net/docs/config-wizard" />
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">
+      <svg class="nav-logo-icon" viewBox="0 0 34 34" fill="none"><circle cx="17" cy="17" r="4" fill="#818cf8"/><circle cx="17" cy="17" r="9" stroke="#818cf8" stroke-width="1.5" opacity="0.55"/><circle cx="17" cy="17" r="15" stroke="#818cf8" stroke-width="1" opacity="0.25"/></svg>
+      <div class="nav-logo-text">Central Valley Mesh<span>Meshtastic Community</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../about.html">About</a></li>
+      <li class="nav-has-dropdown" id="dd-docs">
+        <button class="nav-dropdown-trigger" onclick="toggleNav('dd-docs')">Docs<svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="nav-dropdown">
+          <a href="../docs.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Documentation</a>
+          <div class="dd-divider"></div>
+          <span class="dd-section-label">Guides</span>
+          <a href="../docs/getting-started.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Getting Started</a>
+          <a href="../docs/faq.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>FAQ</a>
+          <a href="../docs/tools.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Tools</a>
+          <a href="../docs/config-wizard.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>Config Wizard</a>
+</div>
+      </li>
+      <li class="nav-has-dropdown" id="dd-community">
+        <button class="nav-dropdown-trigger" onclick="toggleNav('dd-community')">Community<svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="nav-dropdown">
+          <a href="../community.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Overview</a>
+          <div class="dd-divider"></div>
+          <a href="../builds.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Builds</a>
+          <a href="../events.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Events</a>
+          <a href="../bounties.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Bounty Board</a>
+          <div class="dd-divider"></div>
+          <a href="../contribute.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>Contribute</a>
+</div>
+      </li>
+      <li><a href="../stats.html">Stats</a></li>
+      <li><a href="../map.html">Map</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+      <li><a href="https://discord.com/invite/9KUu5QQqMx" target="_blank" class="nav-discord" rel="noopener noreferrer">Discord</a></li>
+    </ul>
+    <button class="theme-toggle" aria-label="Toggle theme"><svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div id="mobile-menu">
+  <a href="../about.html" class="mob-link">About</a>
+  <div class="mob-section" id="mob-docs">
+    <button class="mob-section-trigger" onclick="toggleMobSection('mob-docs')">Docs<svg class="mob-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button>
+    <div class="mob-sub">
+      <a href="../docs.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Documentation</a>
+      <a href="../docs/getting-started.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Getting Started</a>
+      <a href="../docs/faq.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>FAQ</a>
+      <a href="../docs/tools.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Tools</a>
+      <a href="../docs/config-wizard.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>Config Wizard</a>
+    </div>
+  </div>
+  <div class="mob-section" id="mob-community">
+    <button class="mob-section-trigger" onclick="toggleMobSection('mob-community')">Community<svg class="mob-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button>
+    <div class="mob-sub">
+      <a href="../community.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Overview</a>
+      <a href="../builds.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Builds</a>
+      <a href="../events.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Events</a>
+      <a href="../bounties.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Bounty Board</a>
+      <a href="../contribute.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>Contribute</a>
+    </div>
+  </div>
+  <a href="../stats.html" class="mob-link">Stats</a>
+  <a href="../map.html" class="mob-link">Map</a>
+  <a href="../contact.html" class="mob-link">Contact</a>
+  <div class="mob-divider"></div>
+  <a href="https://discord.com/invite/9KUu5QQqMx" target="_blank" class="mob-discord" rel="noopener noreferrer"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>Join Discord</a>
+</div>
+<div class="inner-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="../docs.html">Docs</a> / Config Wizard</div>
+    <div class="section-label">// Config Wizard</div>
+    <h1 style="font-size:clamp(26px,5vw,48px);margin-bottom:16px">Config Wizard</h1>
+    <p style="font-size:16px;color:var(--muted);max-width:560px;font-weight:300;line-height:1.75">Select your options and get exact CLI commands for your CVM Meshtastic setup.</p>
+  </div>
+</div>
+
+<main style="padding-top:24px">
+  <div class="container">
+    <div class="wizard-layout">
+
+      <!-- ══════════════════════ FORM ══════════════════════ -->
+      <div class="wizard-form">
+
+        <!-- Identity -->
+        <div class="field-group">
+          <div class="field-group-header"><div class="fg-label">Identity</div></div>
+          <div class="fields">
+            <div class="field">
+              <div>
+                <div class="field-label">Long name</div>
+                <span class="field-hint">Full display name shown to other nodes (max 36 chars)</span>
+              </div>
+              <input type="text" id="longname" value="CVM Node" oninput="gen()" maxlength="36" />
+            </div>
+            <div class="field">
+              <div>
+                <div class="field-label">Short name</div>
+                <span class="field-hint">4-char callsign shown on map and node list</span>
+              </div>
+              <input type="text" id="shortname" value="CVM" oninput="gen()" maxlength="4" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Device Role -->
+        <div class="field-group">
+          <div class="field-group-header">
+            <div class="fg-label">Device Role</div>
+            <a href="https://meshtastic.org/blog/choosing-the-right-device-role/" target="_blank" class="fg-note" rel="noopener noreferrer">role guide <svg style="display:inline;vertical-align:middle;margin-left:3px" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+          </div>
+          <div class="fields">
+            <div class="field">
+              <div>
+                <div class="field-label">Role</div>
+                <span class="field-hint">Defines routing behavior. Use CLIENT for almost everything.</span>
+                <span class="role-desc" id="role-desc">Routes messages intelligently when no other node has done so</span>
+              </div>
+              <select id="role" onchange="gen(); updateRoleDesc()">
+                <option value="CLIENT" selected>CLIENT — recommended default</option>
+                <option value="CLIENT_MUTE">CLIENT_MUTE — no routing/forwarding</option>
+                <option value="CLIENT_HIDDEN">CLIENT_HIDDEN — stealth/low power</option>
+                <option value="CLIENT_BASE">CLIENT_BASE — rooftop base station</option>
+                <option value="TRACKER">TRACKER — GPS position priority</option>
+                <option value="LOST_AND_FOUND">LOST_AND_FOUND — recovery broadcasts</option>
+                <option value="SENSOR">SENSOR — environmental telemetry priority</option>
+                <option value="TAK">TAK — ATAK integration</option>
+                <option value="TAK_TRACKER">TAK_TRACKER — ATAK PLI broadcasts</option>
+                <option value="ROUTER_LATE">ROUTER_LATE — coverage filler, yields to others</option>
+                <option value="ROUTER">ROUTER — high-elevation infrastructure</option>
+                <option value="REPEATER">REPEATER — like Router, hidden from node list</option>
+              </select>
+            </div>
+            <div class="field">
+              <div>
+                <div class="field-label">Rebroadcast mode</div>
+                <span class="field-hint">Controls which packets get rebroadcast</span>
+              </div>
+              <select id="rebroadcast" onchange="gen()">
+                <option value="ALL" selected>ALL — rebroadcast everything (default)</option>
+                <option value="ALL_SKIP_DECODING">ALL_SKIP_DECODING — repeater only</option>
+                <option value="LOCAL_ONLY">LOCAL_ONLY — ignore foreign meshes</option>
+                <option value="KNOWN_ONLY">KNOWN_ONLY — known nodes only</option>
+                <option value="CORE_PORTNUMS_ONLY">CORE_PORTNUMS_ONLY — standard packets only</option>
+                <option value="NONE">NONE — sensor/tracker/TAK only</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- LoRa Radio -->
+        <div class="field-group">
+          <div class="field-group-header">
+            <div class="fg-label">LoRa Radio</div>
+            <span class="fg-note">⚠ Don't change modem preset</span>
+          </div>
+          <div class="fields">
+            <div class="field">
+              <div>
+                <div class="field-label">Region</div>
+                <span class="field-hint">Must be US for 915 MHz ISM band</span>
+              </div>
+              <select id="region" onchange="gen()">
+                <option value="US" selected>US (915 MHz)</option>
+                <option value="EU_433">EU_433 (433 MHz)</option>
+                <option value="EU_868">EU_868 (868 MHz)</option>
+                <option value="ANZ">ANZ (915 MHz Australia/NZ)</option>
+                <option value="KR">KR (920 MHz Korea)</option>
+                <option value="JP">JP (920 MHz Japan)</option>
+              </select>
+            </div>
+            <div class="field">
+              <div>
+                <div class="field-label">Modem preset</div>
+                <span class="field-hint">⚠ Must stay LongFast to communicate with CVM nodes</span>
+              </div>
+              <select id="modem" onchange="gen()">
+                <option value="LONG_FAST" selected>LONG_FAST — CVM default</option>
+                <option value="LONG_MODERATE">LONG_MODERATE</option>
+                <option value="LONG_SLOW">LONG_SLOW</option>
+                <option value="MEDIUM_SLOW">MEDIUM_SLOW</option>
+                <option value="MEDIUM_FAST">MEDIUM_FAST</option>
+                <option value="SHORT_SLOW">SHORT_SLOW</option>
+                <option value="SHORT_FAST">SHORT_FAST</option>
+                <option value="SHORT_TURBO">SHORT_TURBO</option>
+                <option value="VERY_LONG_SLOW">VERY_LONG_SLOW</option>
+              </select>
+            </div>
+            <div class="field">
+              <div>
+                <div class="field-label">Hop limit</div>
+                <span class="field-hint">Max hops per message (3 is CVM default, 7 is max)</span>
+              </div>
+              <select id="hops" onchange="gen()">
+                <option value="3" selected>3 (CVM default)</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7 (max)</option>
+              </select>
+            </div>
+            <div class="field">
+              <div>
+                <div class="field-label">TX power override</div>
+                <span class="field-hint">Leave default unless you know your hardware's max</span>
+              </div>
+              <select id="txpower" onchange="gen()">
+                <option value="">Default (hardware max)</option>
+                <option value="10">10 dBm (~10 mW)</option>
+                <option value="17">17 dBm (~50 mW)</option>
+                <option value="20">20 dBm (~100 mW)</option>
+                <option value="27">27 dBm (~500 mW, max)</option>
+              </select>
+            </div>
+            <div class="field">
+              <div>
+                <div class="field-label">OK to MQTT</div>
+                <span class="field-hint">Required for map reporting on firmware 2.5+. Grants permission for your packets to be forwarded to MQTT.</span>
+              </div>
+              <input type="checkbox" id="oktomqtt" checked onchange="gen()" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Position -->
+        <div class="field-group">
+          <div class="field-group-header">
+            <div class="fg-label">Position &amp; GPS</div>
+          </div>
+          <div class="fields">
+            <div class="field">
+              <div>
+                <div class="field-label">Position precision</div>
+                <span class="field-hint">Bits of precision shared. Higher = more precise = less private. 13 bits ≈ 1 mile, enough to appear on map.</span>
+              </div>
+              <select id="precision" onchange="gen()">
+                <option value="13">13 bits — ~1 mile radius (recommended)</option>
+                <option value="11">11 bits — ~3 mile radius</option>
+                <option value="14">14 bits — ~0.5 mile radius</option>
+                <option value="17">17 bits — ~100 ft (precise)</option>
+                <option value="0">0 — Hidden, no position shared</option>
+              </select>
+            </div>
+            <div class="field">
+              <div>
+                <div class="field-label">Fixed position</div>
+                <span class="field-hint">Enable for stationary nodes without GPS. Uses --setlat/--setlon/--setalt commands.</span>
+              </div>
+              <input type="checkbox" id="fixedpos" onchange="gen(); toggleFixedPos()" />
+            </div>
+            <div id="fixed-pos-fields" style="display:none">
+              <div class="field">
+                <div>
+                  <div class="field-label">Latitude</div>
+                  <span class="field-hint">Decimal degrees (e.g. 37.7749). North is positive.</span>
+                </div>
+                <input type="number" id="lat" placeholder="37.7749" step="0.0001" oninput="gen()" style="width:190px" />
+              </div>
+              <div class="field">
+                <div>
+                  <div class="field-label">Longitude</div>
+                  <span class="field-hint">Decimal degrees (e.g. -121.9780). West is negative.</span>
+                </div>
+                <input type="number" id="lon" placeholder="-121.9780" step="0.0001" oninput="gen()" style="width:190px" />
+              </div>
+              <div class="field">
+                <div>
+                  <div class="field-label">Altitude (meters)</div>
+                  <span class="field-hint">Elevation in meters above sea level</span>
+                </div>
+                <input type="number" id="alt" placeholder="30" step="1" oninput="gen()" style="width:190px" />
+              </div>
+            </div>
+            <div class="field">
+              <div>
+                <div class="field-label">Map reporting</div>
+                <span class="field-hint">Send periodic position to map server via MQTT</span>
+              </div>
+              <input type="checkbox" id="mapreport" checked onchange="gen()" />
+            </div>
+            <div class="field">
+              <div>
+                <div class="field-label">Map report interval</div>
+                <span class="field-hint">Seconds between map position reports (900 = 15 min)</span>
+              </div>
+              <select id="mapinterval" onchange="gen()">
+                <option value="300">300 s (5 min)</option>
+                <option value="900" selected>900 s (15 min, recommended)</option>
+                <option value="1800">1800 s (30 min)</option>
+                <option value="3600">3600 s (1 hour)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Display & Device -->
+        <div class="field-group">
+          <div class="field-group-header"><div class="fg-label">Display &amp; Device</div></div>
+          <div class="fields">
+            <div class="field">
+              <div>
+                <div class="field-label">Screen timeout</div>
+                <span class="field-hint">Seconds before screen turns off (0 = always on)</span>
+              </div>
+              <select id="screentimeout" onchange="gen()">
+                <option value="">Default</option>
+                <option value="0">0 — Always on</option>
+                <option value="30">30 s</option>
+                <option value="60" selected>60 s (1 min)</option>
+                <option value="300">300 s (5 min)</option>
+                <option value="600">600 s (10 min)</option>
+              </select>
+            </div>
+            <div class="field">
+              <div>
+                <div class="field-label">Timezone</div>
+                <span class="field-hint">POSIX TZ string for local time on display</span>
+              </div>
+              <select id="timezone" onchange="gen()">
+                <option value="">None (UTC)</option>
+                <option value="PST8PDT,M3.2.0,M11.1.0" selected>America/Los_Angeles (Pacific)</option>
+                <option value="MST7MDT,M3.2.0,M11.1.0">America/Denver (Mountain)</option>
+                <option value="CST6CDT,M3.2.0,M11.1.0">America/Chicago (Central)</option>
+                <option value="EST5EDT,M3.2.0,M11.1.0">America/New_York (Eastern)</option>
+              </select>
+            </div>
+            <div class="field">
+              <div>
+                <div class="field-label">LED heartbeat</div>
+                <span class="field-hint">Blink the status LED to show the node is alive</span>
+              </div>
+              <select id="ledhb" onchange="gen()">
+                <option value="">Default (enabled)</option>
+                <option value="true">Disable LED heartbeat</option>
+              </select>
+            </div>
+            <div class="field">
+              <div>
+                <div class="field-label">Node info broadcast</div>
+                <span class="field-hint">How often to broadcast your node info (seconds). 0 = default.</span>
+              </div>
+              <select id="nodeinfoint" onchange="gen()">
+                <option value="">Default</option>
+                <option value="900">900 s (15 min)</option>
+                <option value="1800">1800 s (30 min)</option>
+                <option value="3600">3600 s (1 hour)</option>
+                <option value="7200">7200 s (2 hours)</option>
+                <option value="10800">10800 s (3 hours)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Power -->
+        <div class="field-group">
+          <div class="field-group-header"><div class="fg-label">Power Management</div></div>
+          <div class="fields">
+            <div class="field">
+              <div>
+                <div class="field-label">Power saving mode</div>
+                <span class="field-hint">Sleep between transmissions. ESP32 only. Forced on for ROUTER role.</span>
+              </div>
+              <input type="checkbox" id="powersaving" onchange="gen()" />
+            </div>
+            <div class="field">
+              <div>
+                <div class="field-label">Min wake time</div>
+                <span class="field-hint">Minimum seconds awake before sleeping (power saving mode)</span>
+              </div>
+              <select id="minwake" onchange="gen()">
+                <option value="">Default</option>
+                <option value="10">10 s</option>
+                <option value="30">30 s</option>
+                <option value="60">60 s</option>
+                <option value="120">120 s</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Telemetry -->
+        <div class="field-group">
+          <div class="field-group-header"><div class="fg-label">Telemetry Intervals</div></div>
+          <div class="fields">
+            <div class="field">
+              <div>
+                <div class="field-label">Device telemetry</div>
+                <span class="field-hint">How often to send battery/voltage/channel utilization (seconds)</span>
+              </div>
+              <select id="devtelem" onchange="gen()">
+                <option value="">Default</option>
+                <option value="300">300 s (5 min)</option>
+                <option value="600">600 s (10 min)</option>
+                <option value="1800" selected>1800 s (30 min, recommended)</option>
+                <option value="3600">3600 s (1 hour)</option>
+                <option value="7200">7200 s (2 hours)</option>
+              </select>
+            </div>
+            <div class="field">
+              <div>
+                <div class="field-label">Environment telemetry</div>
+                <span class="field-hint">How often to send temperature/humidity/etc (SENSOR role)</span>
+              </div>
+              <select id="envtelem" onchange="gen()">
+                <option value="">Default</option>
+                <option value="300">300 s (5 min)</option>
+                <option value="600" selected>600 s (10 min)</option>
+                <option value="1800">1800 s (30 min)</option>
+                <option value="3600">3600 s (1 hour)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- MQTT -->
+        <div class="field-group">
+          <div class="field-group-header">
+            <div class="fg-label">MQTT Uplink</div>
+            <span class="fg-note">optional</span>
+          </div>
+          <div class="fields">
+            <div class="field">
+              <div>
+                <div class="field-label">Enable MQTT uplink</div>
+                <span class="field-hint">Forward telemetry to the CVM MeshInfo server</span>
+              </div>
+              <input type="checkbox" id="mqttenable" onchange="gen()" />
+            </div>
+            <div class="field">
+              <div><div class="field-label">Server</div></div>
+              <input type="text" value="mqtt.cvme.sh" readonly style="color:var(--dim);cursor:default" />
+            </div>
+            <div class="field">
+              <div><div class="field-label">Username</div></div>
+              <input type="text" value="cvmesh" readonly style="color:var(--dim);cursor:default" />
+            </div>
+            <div class="field">
+              <div><div class="field-label">Password</div></div>
+              <input type="text" value="large4dogs" readonly style="color:var(--dim);cursor:default" />
+            </div>
+            <div class="field">
+              <div><div class="field-label">Root topic</div></div>
+              <input type="text" value="msh/US/CA/centralvalley" readonly style="color:var(--dim);cursor:default;width:220px" />
+            </div>
+            <div class="field">
+              <div>
+                <div class="field-label">MQTT proxy to client</div>
+                <span class="field-hint">Enable if your node connects via BLE/WiFi without direct internet access</span>
+              </div>
+              <input type="checkbox" id="mqttproxy" onchange="gen()" />
+            </div>
+          </div>
+        </div>
+
+      </div><!-- end wizard-form -->
+
+      <!-- ══════════════════════ OUTPUT ══════════════════════ -->
+      <div class="wizard-output">
+
+        <div class="out-card">
+          <div class="out-header">
+            <div class="out-title">Settings Summary</div>
+            <button class="copy-btn" id="btn-sum" onclick="copyEl('sum-out','btn-sum')">Copy</button>
+          </div>
+          <div class="out-body" id="sum-out"></div>
+        </div>
+
+        <div class="cli-card">
+          <div class="cli-top">
+            <div class="cli-dots"><div class="cli-dot dr"></div><div class="cli-dot dy"></div><div class="cli-dot dg"></div></div>
+            <div class="cli-name">Python CLI — meshtastic</div>
+            <button class="copy-btn" id="btn-cli" onclick="copyEl('cli-out','btn-cli')">Copy</button>
+          </div>
+          <div class="cli-body" id="cli-out"></div>
+        </div>
+
+        <div class="wizard-note">
+          <strong>Install CLI:</strong> <code style="font-family:var(--font-mono)">pip install meshtastic</code><br>
+          <strong>Connect USB:</strong> <code style="font-family:var(--font-mono)">--port /dev/ttyUSB0</code> (Linux/Mac) or <code style="font-family:var(--font-mono)">--port COM4</code> (Windows)<br>
+          <strong>Connect TCP:</strong> <code style="font-family:var(--font-mono)">--host meshtastic.local</code><br>
+          Run <code style="font-family:var(--font-mono)">meshtastic --info</code> first to verify connection.
+        </div>
+
+        <div class="wizard-note info">
+          <strong>Using the app?</strong> All these settings are in the Meshtastic Android/iOS app under Config → LoRa, Config → Device, Config → Position, and Config → MQTT. No CLI required.
+        </div>
+
+        <div class="wizard-note">
+          <strong>⚠ Role warning:</strong> Use CLIENT for almost all deployments. Misplaced ROUTER/REPEATER nodes harm the mesh by gobbling hops. ROUTER_CLIENT is fully deprecated since firmware 2.3.15. <a href="https://meshtastic.org/blog/choosing-the-right-device-role/" target="_blank" rel="noopener noreferrer">Full guide <svg style="display:inline;vertical-align:middle;margin-left:3px" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+        </div>
+
+      </div><!-- end wizard-output -->
+
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <svg width="20" height="20" viewBox="0 0 34 34" fill="none"><circle cx="17" cy="17" r="4" fill="#818cf8"/><circle cx="17" cy="17" r="9" stroke="#818cf8" stroke-width="1.5" opacity="0.55"/><circle cx="17" cy="17" r="15" stroke="#818cf8" stroke-width="1" opacity="0.25"/></svg>
+        <span>Central Valley Mesh</span>
+      </div>
+      <div class="footer-links">
+        <a href="../about.html">About</a>
+        <a href="../docs.html">Docs</a>
+        <a href="../community.html">Community</a>
+        <a href="../builds.html">Builds</a>
+        <a href="../events.html">Events</a>
+        <a href="../bounties.html">Bounties</a>
+        <a href="../stats.html">Stats</a>
+        <a href="../map.html">Map</a>
+        <a href="../contact.html">Contact</a>
+        <a href="../contribute.html">Contribute</a>
+        <a href="../found.html">Found a Node?</a>
+        <a href="https://discord.com/invite/9KUu5QQqMx" target="_blank" rel="noopener noreferrer">Discord</a>
+        <a href="https://github.com/CentralValleyMesh/centralvalleymesh.github.io" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </div>
+      <p class="footer-copy">&copy; 2018&#8211;2026 Central Valley Mesh &nbsp;&middot;&nbsp; <a href="https://creativecommons.org/licenses/by/4.0" target="_blank" style="color:inherit" rel="noopener noreferrer">CC BY 4.0</a></p>
+    </div>
+  </div>
+</footer>
+
+<script src="../js/main.js"></script>
+<script>
+/* Role descriptions */
+const ROLE_DESCS = {
+  CLIENT:         'Routes messages intelligently when no other nearby node has done so. Best choice for most nodes.',
+  CLIENT_MUTE:    'Sends and receives its own messages only — never forwards others. Good when you have multiple devices and only want one to route.',
+  CLIENT_HIDDEN:  'Stealth/low-power mode. Only broadcasts when needed. Does not appear in node lists.',
+  CLIENT_BASE:    'Rooftop base station: always rebroadcasts packets to/from its favorited nodes (early window). Handles all others like CLIENT. Favorite your indoor nodes on this device.',
+  TRACKER:        'Prioritizes GPS position packets. Designed for asset/vehicle/person tracking. Sleeps between GPS transmissions with power saving enabled.',
+  LOST_AND_FOUND: 'Broadcasts its location as a message to the default channel regularly. Used to help recover a lost device.',
+  SENSOR:         'Prioritizes environmental telemetry packets. Sleeps between sensor readings with power saving enabled.',
+  TAK:            'Optimized for ATAK system integration. Reduces routine broadcasts. Requires Meshtastic ATAK plugin.',
+  TAK_TRACKER:    'Automatic ATAK PLI (Position Location Information) broadcasts. For tactical operations integrated with ATAK.',
+  ROUTER_LATE:    'Infrastructure role. Always rebroadcasts but politely gives way — transmits late window only if it hears another node first. For covering dead spots without disrupting normal routing.',
+  ROUTER:         '⚠ Infrastructure only. Always rebroadcasts (early window, cuts in line). Only for genuinely strategic high-elevation sites with wide line-of-sight. Misplaced routers consume hops and harm the mesh.',
+  REPEATER:       '⚠ Infrastructure only. Like ROUTER but invisible in node lists. Always rebroadcasts. Only for strategic locations. No telemetry transmitted.'
+};
+
+const MODEM_CMDS = {
+  LONG_FAST: '--ch-longfast',
+  LONG_MODERATE: '--set lora.modem_preset LONG_MODERATE',
+  LONG_SLOW: '--ch-longslow',
+  MEDIUM_SLOW: '--ch-medslow',
+  MEDIUM_FAST: '--ch-medfast',
+  SHORT_SLOW: '--ch-shortslow',
+  SHORT_FAST: '--ch-shortfast',
+  SHORT_TURBO: '--set lora.modem_preset SHORT_TURBO',
+  VERY_LONG_SLOW: '--ch-vlongslow',
+};
+
+function updateRoleDesc() {
+  const r = document.getElementById('role').value;
+  document.getElementById('role-desc').textContent = ROLE_DESCS[r] || '';
+}
+
+function toggleFixedPos() {
+  const fixed = document.getElementById('fixedpos').checked;
+  document.getElementById('fixed-pos-fields').style.display = fixed ? 'block' : 'none';
+}
+
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function gen() {
+  const longname  = document.getElementById('longname').value     || 'CVM Node';
+  const shortname = document.getElementById('shortname').value.slice(0,4) || 'CVM';
+  const role      = document.getElementById('role').value;
+  const rebroadcast = document.getElementById('rebroadcast').value;
+  const region    = document.getElementById('region').value;
+  const modem     = document.getElementById('modem').value;
+  const hops      = document.getElementById('hops').value;
+  const txpower   = document.getElementById('txpower').value;
+  const oktomqtt  = document.getElementById('oktomqtt').checked;
+  const precision = document.getElementById('precision').value;
+  const fixedpos  = document.getElementById('fixedpos').checked;
+  const lat       = document.getElementById('lat').value;
+  const lon       = document.getElementById('lon').value;
+  const alt       = document.getElementById('alt').value;
+  const mapreport = document.getElementById('mapreport').checked;
+  const mapint    = document.getElementById('mapinterval').value;
+  const screento  = document.getElementById('screentimeout').value;
+  const tz        = document.getElementById('timezone').value;
+  const ledhb     = document.getElementById('ledhb').value;
+  const nodeinfo  = document.getElementById('nodeinfoint').value;
+  const powersave = document.getElementById('powersaving').checked;
+  const minwake   = document.getElementById('minwake').value;
+  const devtelem  = document.getElementById('devtelem').value;
+  const envtelem  = document.getElementById('envtelem').value;
+  const mqtten    = document.getElementById('mqttenable').checked;
+  const mqttproxy = document.getElementById('mqttproxy').checked;
+
+  // ── Settings summary ──
+  const S = document.getElementById('sum-out');
+  S.innerHTML = `
+<span class="out-sec">// Identity</span>
+<div class="out-row"><span class="out-key">long_name</span><span class="out-val o">${esc(longname)}</span></div>
+<div class="out-row"><span class="out-key">short_name</span><span class="out-val o">${esc(shortname)}</span></div>
+<span class="out-sec">// Device Role</span>
+<div class="out-row"><span class="out-key">role</span><span class="out-val">${role}</span></div>
+<div class="out-row"><span class="out-key">rebroadcast_mode</span><span class="out-val">${rebroadcast}</span></div>
+<span class="out-sec">// LoRa</span>
+<div class="out-row"><span class="out-key">region</span><span class="out-val g">${region}</span></div>
+<div class="out-row"><span class="out-key">modem_preset</span><span class="out-val">${modem}</span></div>
+<div class="out-row"><span class="out-key">hop_limit</span><span class="out-val">${hops}</span></div>
+${txpower ? `<div class="out-row"><span class="out-key">tx_power</span><span class="out-val">${txpower} dBm</span></div>` : ''}
+<div class="out-row"><span class="out-key">ok_to_mqtt</span><span class="out-val ${oktomqtt?'g':'d'}">${oktomqtt}</span></div>
+<span class="out-sec">// Position</span>
+<div class="out-row"><span class="out-key">position_precision</span><span class="out-val">${precision} bits</span></div>
+<div class="out-row"><span class="out-key">fixed_position</span><span class="out-val ${fixedpos?'g':'d'}">${fixedpos}</span></div>
+${fixedpos && lat ? `<div class="out-row"><span class="out-key">latitude</span><span class="out-val">${lat}</span></div>` : ''}
+${fixedpos && lon ? `<div class="out-row"><span class="out-key">longitude</span><span class="out-val">${lon}</span></div>` : ''}
+${fixedpos && alt ? `<div class="out-row"><span class="out-key">altitude</span><span class="out-val">${alt} m</span></div>` : ''}
+<div class="out-row"><span class="out-key">map_report</span><span class="out-val ${mapreport?'g':'d'}">${mapreport}</span></div>
+${mapreport ? `<div class="out-row"><span class="out-key">map_interval</span><span class="out-val">${mapint} s</span></div>` : ''}
+<span class="out-sec">// Display / Device</span>
+${screento !== '' ? `<div class="out-row"><span class="out-key">screen_on_secs</span><span class="out-val">${screento}</span></div>` : ''}
+${tz ? `<div class="out-row"><span class="out-key">tzdef</span><span class="out-val">${tz}</span></div>` : ''}
+${ledhb ? `<div class="out-row"><span class="out-key">led_heartbeat_disabled</span><span class="out-val">${ledhb}</span></div>` : ''}
+${nodeinfo ? `<div class="out-row"><span class="out-key">node_info_broadcast_secs</span><span class="out-val">${nodeinfo}</span></div>` : ''}
+${powersave ? `<div class="out-row"><span class="out-key">power.is_power_saving</span><span class="out-val g">true</span></div>` : ''}
+${minwake && powersave ? `<div class="out-row"><span class="out-key">power.min_wake_secs</span><span class="out-val">${minwake}</span></div>` : ''}
+<span class="out-sec">// Telemetry</span>
+${devtelem ? `<div class="out-row"><span class="out-key">telemetry.device_update_interval</span><span class="out-val">${devtelem}</span></div>` : ''}
+${envtelem ? `<div class="out-row"><span class="out-key">telemetry.environment_update_interval</span><span class="out-val">${envtelem}</span></div>` : ''}
+<span class="out-sec">// MQTT</span>
+<div class="out-row"><span class="out-key">mqtt.enabled</span><span class="out-val ${mqtten?'g':'d'}">${mqtten}</span></div>
+${mqtten ? `<div class="out-row"><span class="out-key">mqtt.address</span><span class="out-val">mqtt.cvme.sh</span></div>
+<div class="out-row"><span class="out-key">mqtt.username</span><span class="out-val">cvmesh</span></div>
+<div class="out-row"><span class="out-key">mqtt.password</span><span class="out-val">large4dogs</span></div>
+<div class="out-row"><span class="out-key">mqtt.root</span><span class="out-val">msh/US/CA/centralvalley</span></div>
+<div class="out-row"><span class="out-key">mqtt.encryption_enabled</span><span class="out-val g">true</span></div>
+<div class="out-row"><span class="out-key">mqtt.tls_enabled</span><span class="out-val d">false</span></div>
+<div class="out-row"><span class="out-key">mqtt.proxy_to_client</span><span class="out-val ${mqttproxy?'g':'d'}">${mqttproxy}</span></div>` : ''}
+  `;
+
+  // ── CLI commands ──
+  const L = [];
+  const cmt  = t  => L.push(`<span class="cc"># ${t}</span>`);
+  const cmd  = (f, v) => L.push(`<span class="cp">$</span> <span class="ck">meshtastic</span> <span class="cf">${f}</span>${v ? ` <span class="cv">${v}</span>` : ''}`);
+  const br   = ()    => L.push('');
+
+  cmt('Install: pip install meshtastic');
+  cmt('USB: --port /dev/ttyUSB0  |  TCP: --host meshtastic.local  |  BLE: --ble');
+  br();
+  cmt('Verify connection first:');
+  L.push(`<span class="cp">$</span> <span class="ck">meshtastic</span> <span class="cf">--info</span>`);
+  br();
+
+  cmt('── Identity ──');
+  cmd('--set-owner', `"${longname}"`);
+  cmd('--set-owner-short', `"${shortname.slice(0,4)}"`);
+  br();
+
+  cmt('── LoRa Radio ──');
+  cmd('--set lora.region', region);
+  // Use shortcut commands where available
+  if (MODEM_CMDS[modem] && MODEM_CMDS[modem].startsWith('--ch-')) {
+    L.push(`<span class="cp">$</span> <span class="ck">meshtastic</span> <span class="cf">${MODEM_CMDS[modem]}</span>`);
+  } else {
+    cmd('--set lora.modem_preset', modem);
+  }
+  cmd('--set lora.hop_limit', hops);
+  if (txpower) cmd('--set lora.tx_power', txpower);
+  cmd('--set lora.ok_to_mqtt', oktomqtt ? 'true' : 'false');
+  br();
+
+  cmt('── Device Role ──');
+  cmd('--set device.role', role);
+  if (rebroadcast !== 'ALL') cmd('--set device.rebroadcast_mode', rebroadcast);
+  if (nodeinfo)    cmd('--set device.node_info_broadcast_secs', nodeinfo);
+  if (tz)          cmd('--set device.tzdef', `"${tz}"`);
+  if (ledhb)       cmd('--set device.led_heartbeat_disabled', ledhb);
+  br();
+
+  cmt('── Position ──');
+  if (fixedpos && lat) cmd('--setlat', lat);
+  if (fixedpos && lon) cmd('--setlon', lon);
+  if (fixedpos && alt) cmd('--setalt', alt);
+  if (!fixedpos)       cmd('--set position.fixed_position', 'false');
+  cmd('--set position.position_broadcast_smart_enabled', 'true');
+  if (mapreport) {
+    cmd('--set mqtt.map_report_enabled', 'true');
+    cmd('--set mqtt.map_publish_interval_secs', mapint);
+    cmd('--set mqtt.map_position_precision', precision);
+  }
+  br();
+
+  cmt('── Display ──');
+  if (screento !== '') cmd('--set display.screen_on_secs', screento);
+  br();
+
+  if (powersave || minwake) {
+    cmt('── Power ──');
+    if (powersave)      cmd('--set power.is_power_saving', 'true');
+    if (minwake && powersave) cmd('--set power.min_wake_secs', minwake);
+    br();
+  }
+
+  if (devtelem || envtelem) {
+    cmt('── Telemetry ──');
+    if (devtelem) cmd('--set telemetry.device_update_interval', devtelem);
+    if (envtelem) cmd('--set telemetry.environment_update_interval', envtelem);
+    br();
+  }
+
+  if (mqtten) {
+    cmt('── MQTT Uplink ──');
+    cmd('--set mqtt.enabled', 'true');
+    cmd('--set mqtt.address', 'mqtt.cvme.sh');
+    cmd('--set mqtt.username', 'cvmesh');
+    cmd('--set mqtt.password', 'large4dogs');
+    cmd('--set mqtt.root', 'msh/US/CA/centralvalley');
+    cmd('--set mqtt.encryption_enabled', 'true');
+    cmd('--set mqtt.tls_enabled', 'false');
+    cmd('--set mqtt.proxy_to_client_enabled', mqttproxy ? 'true' : 'false');
+    br();
+  }
+
+  cmt('── Save & Reboot ──');
+  L.push(`<span class="cp">$</span> <span class="ck">meshtastic</span> <span class="cf">--reboot</span>`);
+
+  document.getElementById('cli-out').innerHTML = L.join('\n');
+}
+
+function copyEl(id, btnId) {
+  const text = document.getElementById(id).innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const b = document.getElementById(btnId);
+    b.textContent = 'Copied!';
+    b.classList.add('copied');
+    setTimeout(() => { b.textContent = 'Copy'; b.classList.remove('copied'); }, 2000);
+  });
+}
+
+// Init
+updateRoleDesc();
+gen();
+</script>
+</body>
+</html>

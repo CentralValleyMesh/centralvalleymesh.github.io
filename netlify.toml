@@ -1,12 +1,10 @@
-# Hugo build configuration for Netlify
-# (https://gohugo.io/hosting-and-deployment/hosting-on-netlify/#configure-hugo-version-in-netlify)
-
 [build]
-command = "npm run build:preview"
-publish = "public"
+  publish = "."
+  command = ""
 
-[build.environment]
-GO_VERSION = "1.22.2"
-
-[context.production]
-command = "npm run build:production"
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
