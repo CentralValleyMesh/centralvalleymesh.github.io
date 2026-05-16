@@ -44,10 +44,9 @@ css/
 js/
   main.js                ← Nav, announce bar, mobile menu, theme toggle
   stats.js               ← Live node and traceroute widgets (index page)
-  meshinfo-config.js     ← API toggle (live vs mock data)
+  meshinfo-config.js     ← MeshInfo API base URL config
 
 images/                  ← Site-wide images and logos
-mock_api_data/           ← Dev only: sample API responses for local testing
 ```
 
 ## Features
@@ -61,7 +60,6 @@ mock_api_data/           ← Dev only: sample API responses for local testing
 - **Announce bar** — dismissable sitewide banner for network announcements
 - **Fully responsive** — mobile-first design, tested down to 375px
 - **Dark mode default** — matches Meshtastic's aesthetic; light mode toggle available
-- **Mock data mode** — dev toggle to run the site with sample API data locally without needing API access
 
 ## Contributing
 
@@ -92,8 +90,6 @@ Stats and map pages use the [MeshInfo](https://meshinfo.cvme.sh) API at `meshinf
 **CORS requirement:** `meshinfo.cvme.sh` must have `centralvalleymesh.net` in its `ALLOW_ORIGINS` list or the stats page will show loading spinners on the live site.
 
 To run locally with live data, serve the site from a local web server (e.g. `python3 -m http.server 8000`) — the API requires a proper origin header that `file://` URLs don't provide.
-
-To run locally with mock data, set `USE_MOCK_MESHINFO = true` in `js/meshinfo-config.js`.
 
 ## Deployment
 

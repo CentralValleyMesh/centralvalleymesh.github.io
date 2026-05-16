@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contribute — Central Valley Mesh</title>
+  <meta name="description" content="How to contribute to the Central Valley Mesh website — add builds, fix docs, improve the site." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="icon" href="/favicon.ico" sizes="32x32" />
+  <link rel="icon" href="/images/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <style>
+    .inner-hero { padding:calc(var(--nav-h) + 40px) 0 44px; border-bottom:1px solid var(--border); }
+    .inner-hero h1 { font-size:clamp(32px,5vw,52px); margin-bottom:16px; }
+    .inner-hero p  { font-size:16px; color:var(--muted); max-width:560px; font-weight:300; line-height:1.75; }
+
+    /* Jump links bar */
+    .jump-bar {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 48px;
+    }
+
+    .jump-link {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: .08em;
+      color: var(--muted);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 5px 14px;
+      text-decoration: none;
+      transition: color .15s, border-color .15s, background .15s;
+      white-space: nowrap;
+    }
+
+    .jump-link:hover {
+      color: var(--orange);
+      border-color: rgba(129,140,248,.4);
+      background: rgba(129,140,248,.05);
+    }
+
+    /* Content - full width single column */
+    .contrib-content { max-width: 780px; padding-bottom: 80px; }
+
+    .contrib-section { margin-bottom: 52px; }
+
+    .contrib-section h2 {
+      font-size: 22px;
+      color: var(--text);
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .contrib-section p {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 16px;
+    }
+
+    .contrib-section a { color: var(--orange); }
+
+    /* Step blocks */
+    .step-list { display: flex; flex-direction: column; gap: 12px; }
+
+    .step-block {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 18px 22px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .step-num {
+      width: 30px; height: 30px;
+      background: rgba(129,140,248,.1);
+      border: 1px solid rgba(129,140,248,.25);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-head);
+      font-size: 13px;
+      color: var(--orange);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .step-block h4 { font-size: 14px; color: var(--text); margin-bottom: 5px; }
+    .step-block p  { font-size: 14px; color: var(--muted); line-height: 1.7; margin: 0; }
+    .step-block a  { color: var(--orange); }
+
+    /* Code blocks */
+    .code-block {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--cyan);
+      line-height: 1.8;
+      overflow-x: auto;
+      margin: 10px 0;
+    }
+
+    .code-comment { color: var(--dim); }
+    .code-key     { color: var(--orange); }
+    .code-val     { color: var(--green); }
+
+    /* File tree */
+    .file-tree {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 2;
+      overflow-x: auto;
+    }
+
+    .file-tree .dir  { color: var(--text); }
+    .file-tree .file { color: var(--muted); }
+    .file-tree .new  { color: var(--green); }
+    .file-tree .note { color: var(--dim); font-style: italic; }
+
+    /* Info callout */
+    .info-callout {
+      background: rgba(129,140,248,.06);
+      border-left: 3px solid var(--orange);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.7;
+      margin: 14px 0;
+    }
+
+    .info-callout strong { color: var(--orange); }
+
+    /* Template */
+    .template-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin: 14px 0;
+    }
+
+    .template-header {
+      background: rgba(129,140,248,.06);
+      border-bottom: 1px solid var(--border);
+      padding: 9px 16px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--orange);
+      letter-spacing: .08em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .template-body {
+      padding: 14px 18px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.9;
+      overflow-x: auto;
+    }
+
+    @media (max-width: 600px) {
+      .jump-bar { gap: 4px; }
+      .jump-link { font-size: 10px; padding: 4px 10px; }
+    }
+  
+    .contrib-section { scroll-margin-top: calc(var(--nav-h) + 24px); }</style>
+  <meta property="og:type"        content="website" />
+  <meta property="og:site_name"   content="Central Valley Mesh" />
+  <meta property="og:title"       content="Contribute — Central Valley Mesh" />
+  <meta property="og:description" content="How to contribute to the Central Valley Mesh website — add builds, edit content, submit pull requests on GitHub." />
+  <meta property="og:url"         content="https://centralvalleymesh.net/contribute" />
+  <meta property="og:image"       content="https://centralvalleymesh.net/images/og-card.png" />
+  <meta name="twitter:card"       content="summary_large_image" />
+  <meta name="twitter:title"      content="Contribute — Central Valley Mesh" />
+  <meta name="twitter:description" content="How to contribute to the Central Valley Mesh website — add builds, edit content, submit pull requests on GitHub." />
+  <link rel="canonical" href="https://centralvalleymesh.net/contribute" />
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">
+      <svg class="nav-logo-icon" viewBox="0 0 34 34" fill="none"><circle cx="17" cy="17" r="4" fill="#818cf8"/><circle cx="17" cy="17" r="9" stroke="#818cf8" stroke-width="1.5" opacity="0.55"/><circle cx="17" cy="17" r="15" stroke="#818cf8" stroke-width="1" opacity="0.25"/></svg>
+      <div class="nav-logo-text">Central Valley Mesh<span>Meshtastic Community</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/about/">About</a></li>
+      <li class="nav-has-dropdown" id="dd-docs">
+        <button class="nav-dropdown-trigger" onclick="toggleNav('dd-docs')">Docs<svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="nav-dropdown">
+          <a href="/docs/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Documentation</a>
+          <div class="dd-divider"></div>
+          <span class="dd-section-label">Guides</span>
+          <a href="/docs/getting-started/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Getting Started</a>
+          <a href="/docs/faq/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>FAQ</a>
+          <a href="/docs/tools/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Tools</a>
+          <a href="/docs/config-wizard/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>Config Wizard</a>
+</div>
+      </li>
+      <li class="nav-has-dropdown" id="dd-community">
+        <button class="nav-dropdown-trigger" onclick="toggleNav('dd-community')">Community<svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="nav-dropdown">
+          <a href="/community/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Overview</a>
+          <div class="dd-divider"></div>
+          <a href="/builds/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Builds</a>
+          <a href="/events/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Events</a>
+          <a href="/bounties/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Bounty Board</a>
+          <div class="dd-divider"></div>
+          <a href="/contribute/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>Contribute</a>
+</div>
+      </li>
+      <li><a href="/stats/">Stats</a></li>
+      <li><a href="/map/">Map</a></li>
+      <li><a href="/contact/">Contact</a></li>
+      <li><a href="https://discord.com/invite/9KUu5QQqMx" target="_blank" class="nav-discord" rel="noopener noreferrer">Discord</a></li>
+    </ul>
+    <button class="theme-toggle" aria-label="Toggle theme"><svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div id="mobile-menu">
+  <a href="/about/" class="mob-link">About</a>
+  <div class="mob-section" id="mob-docs">
+    <button class="mob-section-trigger" onclick="toggleMobSection('mob-docs')">Docs<svg class="mob-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button>
+    <div class="mob-sub">
+      <a href="/docs/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Documentation</a>
+      <a href="/docs/getting-started/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Getting Started</a>
+      <a href="/docs/faq/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>FAQ</a>
+      <a href="/docs/tools/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Tools</a>
+      <a href="/docs/config-wizard/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>Config Wizard</a>
+    </div>
+  </div>
+  <div class="mob-section" id="mob-community">
+    <button class="mob-section-trigger" onclick="toggleMobSection('mob-community')">Community<svg class="mob-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button>
+    <div class="mob-sub">
+      <a href="/community/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Overview</a>
+      <a href="/builds/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Builds</a>
+      <a href="/events/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Events</a>
+      <a href="/bounties/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Bounty Board</a>
+      <a href="/contribute/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>Contribute</a>
+    </div>
+  </div>
+  <a href="/stats/" class="mob-link">Stats</a>
+  <a href="/map/" class="mob-link">Map</a>
+  <a href="/contact/" class="mob-link">Contact</a>
+  <div class="mob-divider"></div>
+  <a href="https://discord.com/invite/9KUu5QQqMx" target="_blank" class="mob-discord" rel="noopener noreferrer"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>Join Discord</a>
+</div>
+<div class="inner-hero">
+  <div class="container">
+    <div class="section-label">// Contribute</div>
+    <h1>Help build the network.</h1>
+    <p>Add builds, post events, update bounties, submit PRs — every contribution helps grow the mesh.</p>
+  </div>
+</div>
+
+<main>
+  <div class="container" style="padding-top:32px">
+
+    <!-- Jump links -->
+    <div class="jump-bar">
+      <a href="#overview"      class="jump-link">Overview</a>
+      <a href="#file-structure" class="jump-link">File Structure</a>
+      <a href="#add-build"     class="jump-link">Add a Build</a>
+      <a href="#edit-content"  class="jump-link">Edit Content</a>
+      <a href="#github-pr"     class="jump-link">Submit a PR</a>
+      <a href="#no-code"       class="jump-link">No-Code Option</a>
+      <a href="#guidelines"    class="jump-link">Guidelines</a>
+    </div>
+
+    <div class="contrib-content">
+
+        <!-- Overview -->
+        <div class="contrib-section" id="overview">
+          <h2>Overview</h2>
+          <p>The Central Valley Mesh website is a static HTML/CSS/JS site hosted on GitHub Pages. There's no build step, no framework, no CMS — just files you can edit directly.</p>
+          <p>The repo lives at <a href="https://github.com/CentralValleyMesh/centralvalleymesh.github.io" target="_blank" rel="noopener noreferrer">github.com/CentralValleyMesh/centralvalleymesh.github.io</a>. To contribute, you fork it, make your changes, and open a pull request. A maintainer will review and merge it.</p>
+          <div class="info-callout"><strong>No GitHub account?</strong> No problem — drop your content in <strong>#website</strong> on Discord and a maintainer will post it for you.</div>
+        </div>
+
+        <!-- File structure -->
+        <div class="contrib-section" id="file-structure">
+          <h2>File Structure</h2>
+          <p>Here's what the repo looks like and where things live:</p>
+          <div class="file-tree">
+            <span class="dir">centralvalleymesh/</span><br>
+            &nbsp;&nbsp;<span class="file">index.html</span> &nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← home page</span><br>
+            &nbsp;&nbsp;<span class="file">/about/</span><br>
+            &nbsp;&nbsp;<span class="file">docs.html</span><br>
+            &nbsp;&nbsp;<span class="file">builds.html</span> &nbsp;&nbsp;&nbsp;<span class="note">← build listing page</span><br>
+            &nbsp;&nbsp;<span class="file">community.html</span><br>
+            &nbsp;&nbsp;<span class="file">bounties.html</span> &nbsp;<span class="note">← bounty board</span> <br>
+            &nbsp;&nbsp;<span class="file">events.html</span> &nbsp;&nbsp;&nbsp;<span class="note">← add events here</span><br>
+            &nbsp;&nbsp;<span class="file">map.html</span><br>
+            &nbsp;&nbsp;<span class="file">contact.html</span><br>
+            &nbsp;&nbsp;<span class="file">contribute.html</span> &nbsp;<span class="note">← this page</span><br>
+            &nbsp;&nbsp;<span class="file">found.html</span> &nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← QR code landing page</span><br>
+            &nbsp;&nbsp;<span class="file">404.html</span><br>
+            &nbsp;&nbsp;<span class="dir">builds/</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="dir">_template/</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← copy this folder</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">index.html</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="dir">magnetic-sticky-node/</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">index.html</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">magnet-build-1.jpg</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">magnet-build-2.jpg</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="new">your-build-name/</span> &nbsp;&nbsp;&nbsp;<span class="note">← your folder goes here</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="new">index.html</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="new">your-photo.jpg</span><br>
+            &nbsp;&nbsp;<span class="dir">docs/</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">getting-started.html</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">faq.html</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">tools.html</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">config-wizard.html</span> &nbsp;<span class="note">← interactive config generator</span><br>
+            &nbsp;&nbsp;<span class="dir">css/</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">style.css</span> &nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← global styles</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">home.css</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← home page only</span><br>
+            &nbsp;&nbsp;<span class="dir">images/</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← put your photos here</span><br>
+            &nbsp;&nbsp;<span class="dir">js/</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">main.js</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← nav, theme toggle</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">stats.js</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← live node/route widgets (index page)</span>
+          </div>
+        </div>
+
+        <!-- Add a build -->
+        <div class="contrib-section" id="add-build">
+          <h2>Add a Build Post</h2>
+          <p>Each build lives in its own folder inside <code style="font-family:var(--font-mono);color:var(--cyan);font-size:13px">builds/</code> alongside its own images. Copy the <code style="font-family:var(--font-mono);color:var(--cyan);font-size:13px">builds/_template/</code> folder, rename it to your build name, and edit the <code style="font-family:var(--font-mono);color:var(--cyan);font-size:13px">index.html</code> inside.</p>
+
+          <p>Then add a card for it on <code style="font-family:var(--font-mono);color:var(--cyan);font-size:13px">builds.html</code> — copy an existing card and update the title, description, tags, image path, and link.</p>
+
+          <div class="template-card">
+            <div class="template-header">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+              builds/your-build-name/index.html — starter template
+            </div>
+            <div class="template-body">
+<span class="code-comment">&lt;!-- Copy builds/_template/ folder, rename it, then edit index.html --&gt;</span><br>
+<span class="code-comment">&lt;!-- and replace these values: --&gt;</span><br><br>
+<span class="code-key">Title:</span> &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-val">Your Build Name</span><br>
+<span class="code-key">Author:</span> &nbsp;&nbsp;&nbsp;<span class="code-val">Your Discord username</span><br>
+<span class="code-key">Date:</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-val">Month DD, YYYY</span><br>
+<span class="code-key">Category:</span> <span class="code-val">Community</span><br>
+<span class="code-key">Tags:</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-val">Hardware names, features (e.g. T-Beam, Solar, Portable)</span><br>
+<span class="code-key">Images:</span> &nbsp;&nbsp;&nbsp;<span class="code-val">Put photos in your build folder, reference as ./your-photo.jpg</span><br>
+<span class="code-key">Parts:</span> &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-val">Link to Amazon/Adafruit/etc for each component</span>
+            </div>
+          </div>
+
+          <div class="info-callout"><strong>Images:</strong> Put your photos directly in your build folder (e.g. <code style="font-family:var(--font-mono)">builds/your-build-name/photo.jpg</code>). JPG or WebP recommended, keep files under 1MB each. Reference them in your build page as <code style="font-family:var(--font-mono)">./your-photo.jpg</code> or just <code style="font-family:var(--font-mono)">photo.jpg</code>.</div>
+        </div>
+
+        <!-- Edit existing content -->
+        <div class="contrib-section" id="edit-content">
+          <h2>Edit Existing Content</h2>
+          <p>Every page is a plain HTML file. Open it in any text editor, find the text you want to change, edit it, and save. Here's exactly how to edit each common thing:</p>
+          <div class="step-list">
+
+            <div class="step-block">
+              <div class="step-num">✓</div>
+              <div>
+                <h4>Add or edit an event</h4>
+                <p id="add-event">Open <code style="font-family:var(--font-mono);color:var(--cyan)">events.html</code>. Copy any existing <code style="font-family:var(--font-mono);color:var(--cyan)">&lt;div class="event-card"&gt;</code> block and paste it above or below. Fill in the date, title, type badge (<code style="font-family:var(--font-mono)">meetup</code>, <code style="font-family:var(--font-mono)">online</code>, <code style="font-family:var(--font-mono)">deploy</code>, or <code style="font-family:var(--font-mono)">workshop</code>), location, and description. For past events, add <code style="font-family:var(--font-mono)">class="event-card past"</code> to the outer div. Generate calendar links at <a href="https://calndr.link/event/create" target="_blank" rel="noopener noreferrer">calndr.link</a>.</div>
+            </div>
+
+            <div class="step-block">
+              <div class="step-num">✓</div>
+              <div>
+                <h4 id="bounty-board">Add a hardware bounty</h4>
+                <p>Open <code style="font-family:var(--font-mono);color:var(--cyan)">community.html</code> and find the <code style="font-family:var(--font-mono);color:var(--cyan)">&lt;section id="hardware-bounty"&gt;</code> section (search for "Bounty Board"). Copy an existing bounty card block, update the location name, description, and the "Volunteer in Discord" link. The dashed placeholder card at the bottom marks where to add new ones.</p>
+              </div>
+            </div>
+
+            <div class="step-block">
+              <div class="step-num">✓</div>
+              <div>
+                <h4>Add a community to the California list</h4>
+                <p>Open <code style="font-family:var(--font-mono);color:var(--cyan)">community.html</code> and find the right region block (Northern CA, Central Valley, or Southern CA). Copy an existing <code style="font-family:var(--font-mono);color:var(--cyan)">&lt;div class="comm-card" data-href="..."&gt;</code> block and update the abbreviation badge, name, description, and links. The JS click handler is automatic.</p>
+              </div>
+            </div>
+
+            <div class="step-block">
+              <div class="step-num">✓</div>
+              <div>
+                <h4>Update MQTT / network settings</h4>
+                <p>The config card appears on the home page (<code style="font-family:var(--font-mono);color:var(--cyan)">index.html</code> — search for <code style="font-family:var(--font-mono)">config-card-header</code>) and in the Config Wizard (<code style="font-family:var(--font-mono);color:var(--cyan)">docs/config-wizard.html</code> — update the readonly input values and the JS <code style="font-family:var(--font-mono)">gen()</code> function). Also update <code style="font-family:var(--font-mono);color:var(--cyan)">docs/getting-started.html</code> and <code style="font-family:var(--font-mono);color:var(--cyan)">docs/faq.html</code> to match.</p>
+              </div>
+            </div>
+
+            <div class="step-block">
+              <div class="step-num">✓</div>
+              <div>
+                <h4>Update the announcement bar</h4>
+                <p>Open <code style="font-family:var(--font-mono);color:var(--cyan)">js/main.js</code> and find the <code style="font-family:var(--font-mono)">ANNOUNCE</code> object at the top. Set <code style="font-family:var(--font-mono)">enabled: true</code>, update the <code style="font-family:var(--font-mono)">message</code> string (supports HTML links), and change the <code style="font-family:var(--font-mono)">id</code> to a new unique string — this clears everyone's dismissed state so they'll see the new message. Set <code style="font-family:var(--font-mono)">enabled: false</code> to hide it globally.</p>
+              </div>
+            </div>
+
+            <div class="step-block">
+              <div class="step-num">✓</div>
+              <div>
+                <h4>Add a FAQ question</h4>
+                <p>Open <code style="font-family:var(--font-mono);color:var(--cyan)">docs/faq.html</code> and copy an existing <code style="font-family:var(--font-mono);color:var(--cyan)">.faq-item</code> block. Add your question as the button text and the answer inside the <code style="font-family:var(--font-mono);color:var(--cyan)">.faq-body</code> div. Place it under the relevant <code style="font-family:var(--font-mono);color:var(--cyan)">.section-label</code> heading.</p>
+              </div>
+            </div>
+
+            <div class="step-block">
+              <div class="step-num">✓</div>
+              <div>
+                <h4>Add a tool or resource</h4>
+                <p>Open <code style="font-family:var(--font-mono);color:var(--cyan)">docs/tools.html</code>. For a CVM tool, add to the "CVM Tools" <code style="font-family:var(--font-mono);color:var(--cyan)">.grid-2</code> section at the top. For an external tool, copy an existing <code style="font-family:var(--font-mono);color:var(--cyan)">.doc-card</code> link under the right section (Firmware, Network, Apps) and update the URL, title, and description.</p>
+              </div>
+            </div>
+
+            <div class="step-block">
+              <div class="step-num">✓</div>
+              <div>
+                <h4>Typos and copy changes</h4>
+                <p>Just open the relevant HTML file in any text editor, use Ctrl+F to find the text you want to change, edit it, and save. Every page is a self-contained HTML file — nothing will break.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- GitHub PR -->
+        <div class="contrib-section" id="github-pr">
+          <h2>Submit a Pull Request</h2>
+          <div class="step-list">
+            <div class="step-block">
+              <div class="step-num">1</div>
+              <div>
+                <h4>Fork the repository</h4>
+                <p>Go to <a href="https://github.com/CentralValleyMesh/centralvalleymesh.github.io" target="_blank" rel="noopener noreferrer">the repo on GitHub</a> and click <strong style="color:var(--text)">Fork</strong> in the top right. This creates your own copy.</p>
+              </div>
+            </div>
+            <div class="step-block">
+              <div class="step-num">2</div>
+              <div>
+                <h4>Make your changes</h4>
+                <p>You can edit files directly on GitHub using the pencil icon, or clone the repo locally. For build posts with images, cloning locally is easier.</p>
+                <div class="code-block">git clone https://github.com/YOUR-USERNAME/centralvalleymesh.github.io.git<br>cd centralvalleymesh.github.io</div>
+              </div>
+            </div>
+            <div class="step-block">
+              <div class="step-num">3</div>
+              <div>
+                <h4>Preview locally</h4>
+                <p>Run a local server to see your changes before submitting:</p>
+                <div class="code-block">python3 -m http.server 8080<br><span class="code-comment"># then open http://localhost:8080</span></div>
+              </div>
+            </div>
+            <div class="step-block">
+              <div class="step-num">4</div>
+              <div>
+                <h4>Commit and push</h4>
+                <div class="code-block">git add .<br>git commit -m "Add [your-build-name] build post"<br>git push</div>
+              </div>
+            </div>
+            <div class="step-block">
+              <div class="step-num">5</div>
+              <div>
+                <h4>Open a pull request</h4>
+                <p>Go back to <a href="https://github.com/CentralValleyMesh/centralvalleymesh.github.io" target="_blank" rel="noopener noreferrer">the main repo</a> on GitHub. You'll see a banner prompting you to open a PR. Click it, add a short description of what you changed, and submit.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- No-code option -->
+        <div class="contrib-section" id="no-code">
+          <h2>No-Code Option</h2>
+          <p>Not comfortable with GitHub? No problem at all — drop your content in the <strong style="color:var(--text)">#builds</strong> or <strong style="color:var(--text)">#website</strong> channel on Discord and a maintainer will post it for you.</p>
+          <p>For a build post, include:</p>
+          <div class="step-list">
+            <div class="step-block" style="padding:14px 20px">
+              <div class="step-num"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+              <p style="margin:0;font-size:13px;color:var(--muted)">Photos of your build (exterior and interior if possible)</p>
+            </div>
+            <div class="step-block" style="padding:14px 20px">
+              <div class="step-num"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg></div>
+              <p style="margin:0;font-size:13px;color:var(--muted)">Parts list with links (Amazon, Adafruit, etc.)</p>
+            </div>
+            <div class="step-block" style="padding:14px 20px">
+              <div class="step-num"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+              <p style="margin:0;font-size:13px;color:var(--muted)">Short description of what it does, any tricks or gotchas</p>
+            </div>
+          </div>
+          <a href="https://discord.com/invite/9KUu5QQqMx" target="_blank" class="btn btn-discord" style="display:inline-flex;margin-top:16px" rel="noopener noreferrer">Post in #builds on Discord</a>
+        </div>
+
+        <!-- Guidelines -->
+        <div class="contrib-section" id="guidelines">
+          <h2>Content Guidelines</h2>
+          <div class="step-list">
+            <div class="step-block">
+              <div class="step-num" style="font-size:18px">✓</div>
+              <div>
+                <h4>Keep it relevant</h4>
+                <p>Content should be about Meshtastic, LoRa mesh networking, or community activity in or around the Central Valley.</p>
+              </div>
+            </div>
+            <div class="step-block">
+              <div class="step-num" style="font-size:18px">✓</div>
+              <div>
+                <h4>No promotion or spam</h4>
+                <p>No affiliate links, no paid promotions, no selling. Plain Amazon/manufacturer links for parts are fine.</p>
+              </div>
+            </div>
+            <div class="step-block">
+              <div class="step-num" style="font-size:18px">✓</div>
+              <div>
+                <h4>Honest and accurate</h4>
+                <p>If something didn't work or was hard, say so. Honest build notes are more useful than perfect-sounding ones.</p>
+              </div>
+            </div>
+            <div class="step-block">
+              <div class="step-num" style="font-size:18px">✓</div>
+              <div>
+                <h4>Follow the community guidelines</h4>
+                <p>Same rules as Discord — no politics, religion, SHAT content, or inappropriate material. See the <a href="/community/#guidelines">community guidelines</a> for the full list.</p>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:24px">
+            <p>Questions? Ask in <strong style="color:var(--text)">#website</strong> on Discord — someone will help you get your contribution posted.</p>
+            <a href="https://discord.com/invite/9KUu5QQqMx" target="_blank" class="btn btn-outline" style="display:inline-flex;margin-top:8px;font-size:11px" rel="noopener noreferrer">Join Discord</a>
+          </div>
+        </div>
+
+      </div><!-- end contrib-content -->
+  </div><!-- end container -->
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <svg width="20" height="20" viewBox="0 0 34 34" fill="none"><circle cx="17" cy="17" r="4" fill="#818cf8"/><circle cx="17" cy="17" r="9" stroke="#818cf8" stroke-width="1.5" opacity="0.55"/><circle cx="17" cy="17" r="15" stroke="#818cf8" stroke-width="1" opacity="0.25"/></svg>
+        <span>Central Valley Mesh</span>
+      </div>
+      <div class="footer-links">
+        <a href="/about/">About</a>
+        <a href="/docs/">Docs</a>
+        <a href="/community/">Community</a>
+        <a href="/builds/">Builds</a>
+        <a href="/events/">Events</a>
+        <a href="/bounties/">Bounties</a>
+        <a href="/stats/">Stats</a>
+        <a href="/map/">Map</a>
+        <a href="/contact/">Contact</a>
+        <a href="/contribute/">Contribute</a>
+        <a href="/found/">Found a Node?</a>
+        <a href="https://discord.com/invite/9KUu5QQqMx" target="_blank" rel="noopener noreferrer">Discord</a>
+        <a href="https://github.com/CentralValleyMesh/centralvalleymesh.github.io" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </div>
+      <p class="footer-copy">&copy; 2018&#8211;2026 Central Valley Mesh &nbsp;&middot;&nbsp; <a href="https://creativecommons.org/licenses/by/4.0" target="_blank" style="color:inherit" rel="noopener noreferrer">CC BY 4.0</a></p>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/main.js"></script>
+</body>
+</html>
