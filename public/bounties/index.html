@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bounty Board — Central Valley Mesh</title>
+  <meta name="description" content="Open hardware and location bounties for the Central Valley Mesh Meshtastic network. Help expand coverage across the Central Valley." />
+  <link rel="canonical" href="https://centralvalleymesh.net/bounties" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" />
+  <link rel="icon" href="/favicon.ico" sizes="32x32" />
+  <link rel="icon" href="/images/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <meta property="og:type"        content="website" />
+  <meta property="og:site_name"   content="Central Valley Mesh" />
+  <meta property="og:title"       content="Bounty Board — Central Valley Mesh" />
+  <meta property="og:description" content="Open hardware and location bounties for the Central Valley Mesh Meshtastic network." />
+  <meta property="og:url"         content="https://centralvalleymesh.net/bounties" />
+  <meta property="og:image"       content="https://centralvalleymesh.net/images/og-card.png" />
+  <meta name="twitter:card"       content="summary_large_image" />
+  <meta name="twitter:title"      content="Bounty Board — Central Valley Mesh" />
+  <meta name="twitter:description" content="Open hardware and location bounties for the Central Valley Mesh Meshtastic network." />
+  <style>
+    .inner-hero {
+      padding: calc(var(--nav-h) + 40px) 0 44px;
+      border-bottom: 1px solid var(--border);
+    }
+    .inner-hero h1 { font-size: clamp(26px,5vw,48px); margin-bottom: 16px; }
+    .inner-hero p  { font-size: 16px; color: var(--muted); max-width: 540px; font-weight: 300; line-height: 1.75; }
+
+    .bounty-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-top: 36px;
+    }
+
+    @media (max-width: 720px) {
+      .bounty-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">
+      <svg class="nav-logo-icon" viewBox="0 0 34 34" fill="none"><circle cx="17" cy="17" r="4" fill="#818cf8"/><circle cx="17" cy="17" r="9" stroke="#818cf8" stroke-width="1.5" opacity="0.55"/><circle cx="17" cy="17" r="15" stroke="#818cf8" stroke-width="1" opacity="0.25"/></svg>
+      <div class="nav-logo-text">Central Valley Mesh<span>Meshtastic Community</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/about/">About</a></li>
+      <li class="nav-has-dropdown" id="dd-docs">
+        <button class="nav-dropdown-trigger" onclick="toggleNav('dd-docs')">Docs<svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="nav-dropdown">
+          <a href="/docs/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Documentation</a>
+          <div class="dd-divider"></div>
+          <span class="dd-section-label">Guides</span>
+          <a href="/docs/getting-started/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Getting Started</a>
+          <a href="/docs/faq/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>FAQ</a>
+          <a href="/docs/tools/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Tools</a>
+          <a href="/docs/config-wizard/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>Config Wizard</a>
+</div>
+      </li>
+      <li class="nav-has-dropdown" id="dd-community">
+        <button class="nav-dropdown-trigger" onclick="toggleNav('dd-community')">Community<svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="nav-dropdown">
+          <a href="/community/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Overview</a>
+          <div class="dd-divider"></div>
+          <a href="/builds/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Builds</a>
+          <a href="/events/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Events</a>
+          <a href="/bounties/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Bounty Board</a>
+          <div class="dd-divider"></div>
+          <a href="/contribute/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>Contribute</a>
+</div>
+      </li>
+      <li><a href="/stats/">Stats</a></li>
+      <li><a href="/map/">Map</a></li>
+      <li><a href="/contact/">Contact</a></li>
+      <li><a href="https://discord.com/invite/9KUu5QQqMx" target="_blank" class="nav-discord" rel="noopener noreferrer">Discord</a></li>
+    </ul>
+    <button class="theme-toggle" aria-label="Toggle theme"><svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div id="mobile-menu">
+  <a href="/about/" class="mob-link">About</a>
+  <div class="mob-section" id="mob-docs">
+    <button class="mob-section-trigger" onclick="toggleMobSection('mob-docs')">Docs<svg class="mob-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button>
+    <div class="mob-sub">
+      <a href="/docs/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Documentation</a>
+      <a href="/docs/getting-started/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Getting Started</a>
+      <a href="/docs/faq/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>FAQ</a>
+      <a href="/docs/tools/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Tools</a>
+      <a href="/docs/config-wizard/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>Config Wizard</a>
+    </div>
+  </div>
+  <div class="mob-section" id="mob-community">
+    <button class="mob-section-trigger" onclick="toggleMobSection('mob-community')">Community<svg class="mob-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button>
+    <div class="mob-sub">
+      <a href="/community/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Overview</a>
+      <a href="/builds/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Builds</a>
+      <a href="/events/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Events</a>
+      <a href="/bounties/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Bounty Board</a>
+      <a href="/contribute/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>Contribute</a>
+    </div>
+  </div>
+  <a href="/stats/" class="mob-link">Stats</a>
+  <a href="/map/" class="mob-link">Map</a>
+  <a href="/contact/" class="mob-link">Contact</a>
+  <div class="mob-divider"></div>
+  <a href="https://discord.com/invite/9KUu5QQqMx" target="_blank" class="mob-discord" rel="noopener noreferrer"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>Join Discord</a>
+</div>
+
+<div class="container">
+
+    <div class="inner-hero">
+      <div class="breadcrumb"><a href="/community/">Community</a> / Bounty Board</div>
+      <div class="section-label">// Hardware Bounty Board</div>
+      <h1>Help expand the mesh.</h1>
+      <p>Open requests from the community — specific locations that would benefit from a node, or hardware we're looking to source. If you can help with any of these, reach out in Discord.</p>
+    </div>
+
+    <section class="page-section">
+            <!-- Placeholder notice -->
+      
+      <div class="bounty-grid fade-in">
+
+        <div class="card" style="border-color:rgba(129,140,248,.25)">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+            <div style="width:32px;height:32px;background:rgba(129,140,248,.1);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--orange);flex-shrink:0">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <div>
+              <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--orange);text-transform:uppercase;margin-bottom:2px">Location Needed</div>
+              <h4 style="font-size:14px;color:var(--text)">Elevated node — South Stockton</h4>
+            </div>
+          </div>
+          <p style="font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:12px">Coverage gap in south Stockton. A rooftop or elevated node here would connect several neighborhoods currently out of range.</p>
+          <a href="https://discord.com/invite/9KUu5QQqMx" target="_blank" style="font-family:var(--font-mono);font-size:11px;color:var(--orange);letter-spacing:.06em" rel="noopener noreferrer">Volunteer in Discord</a>
+        </div>
+
+        <div class="card" style="border-color:rgba(129,140,248,.25)">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+            <div style="width:32px;height:32px;background:rgba(129,140,248,.1);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--orange);flex-shrink:0">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v3M12 20v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M1 12h3M20 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
+            </div>
+            <div>
+              <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--orange);text-transform:uppercase;margin-bottom:2px">Hardware Needed</div>
+              <h4 style="font-size:14px;color:var(--text)">Solar repeater — Rural Merced County</h4>
+            </div>
+          </div>
+          <p style="font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:12px">Looking for a solar-powered repeater node for a rural agricultural area with no power access. RAK WisBlock or similar preferred.</p>
+          <a href="https://discord.com/invite/9KUu5QQqMx" target="_blank" style="font-family:var(--font-mono);font-size:11px;color:var(--orange);letter-spacing:.06em" rel="noopener noreferrer">Volunteer in Discord</a>
+        </div>
+
+        <div class="card">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+            <div style="width:32px;height:32px;background:rgba(129,140,248,.1);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--orange);flex-shrink:0">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <div>
+              <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--dim);text-transform:uppercase;margin-bottom:2px">Location Needed</div>
+              <h4 style="font-size:14px;color:var(--text)">Bridge node — Fresno to Visalia</h4>
+            </div>
+          </div>
+          <p style="font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:12px">A mid-point node between Fresno and Visalia would link CVM and Visalia Mesh. Looking for a property owner or business willing to host.</p>
+          <a href="https://discord.com/invite/9KUu5QQqMx" target="_blank" style="font-family:var(--font-mono);font-size:11px;color:var(--orange);letter-spacing:.06em" rel="noopener noreferrer">Volunteer in Discord</a>
+        </div>
+
+        <div class="card" style="border-style:dashed;opacity:.55;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;padding:28px;text-align:center">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(129,140,248,0.4)" stroke-width="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <div style="font-size:13px;color:var(--muted)">Have a location or hardware need?</div>
+          <a href="https://discord.com/invite/9KUu5QQqMx" target="_blank" style="font-family:var(--font-mono);font-size:11px;color:var(--orange)" rel="noopener noreferrer">Post in #general</a>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════
+             ADD A NEW BOUNTY — copy the block below, paste it above
+             this comment, and fill in the location and description.
+             Post in #website on Discord if you need help.
+             ═══════════════════════════════════════════════════════════
+
+        <div class="card">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+            <div style="width:32px;height:32px;background:rgba(129,140,248,.1);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--orange);flex-shrink:0">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <div>
+              <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--orange);text-transform:uppercase;margin-bottom:2px">Location Needed</div>
+              <h4 style="font-size:14px;color:var(--text)">Brief title — City/Area</h4>
+            </div>
+          </div>
+          <p style="font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:12px">Describe the coverage gap, why this location would help the network, and any specific requirements (elevation, power access, etc.).</p>
+          <a href="https://discord.com/invite/9KUu5QQqMx" target="_blank" style="font-family:var(--font-mono);font-size:11px;color:var(--orange);letter-spacing:.06em" rel="noopener noreferrer">Volunteer in Discord</a>
+        </div>
+
+             ═══════════════════════════════════════════════════════════ -->
+
+
+      </div>
+
+      <div class="card" style="margin-top:20px;padding:18px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+        <p style="font-size:14px;color:var(--muted);margin:0;flex:1">To add a bounty, post it in <strong style="color:var(--text)">#general</strong> on Discord or open a PR editing <code style="font-family:var(--font-mono);color:var(--cyan);font-size:12px">bounties.html</code>. See the <a href="/contribute/">Contribute Guide</a>.</p>
+      </div>
+    </section>
+
+  </div>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <svg width="20" height="20" viewBox="0 0 34 34" fill="none"><circle cx="17" cy="17" r="4" fill="#818cf8"/><circle cx="17" cy="17" r="9" stroke="#818cf8" stroke-width="1.5" opacity="0.55"/><circle cx="17" cy="17" r="15" stroke="#818cf8" stroke-width="1" opacity="0.25"/></svg>
+        <span>Central Valley Mesh</span>
+      </div>
+      <div class="footer-links">
+        <a href="/about/">About</a>
+        <a href="/docs/">Docs</a>
+        <a href="/community/">Community</a>
+        <a href="/builds/">Builds</a>
+        <a href="/events/">Events</a>
+        <a href="/bounties/">Bounties</a>
+        <a href="/stats/">Stats</a>
+        <a href="/map/">Map</a>
+        <a href="/contact/">Contact</a>
+        <a href="/contribute/">Contribute</a>
+        <a href="/found/">Found a Node?</a>
+        <a href="https://discord.com/invite/9KUu5QQqMx" target="_blank" rel="noopener noreferrer">Discord</a>
+        <a href="https://github.com/CentralValleyMesh/centralvalleymesh.github.io" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </div>
+      <p class="footer-copy">&copy; 2018&#8211;2026 Central Valley Mesh &nbsp;&middot;&nbsp; <a href="https://creativecommons.org/licenses/by/4.0" target="_blank" style="color:inherit" rel="noopener noreferrer">CC BY 4.0</a></p>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/main.js"></script>
+</body>
+</html>

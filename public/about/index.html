@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — Central Valley Mesh</title>
+  <meta name="description" content="About the Central Valley Mesh community — who we are, where we operate, and what we're building." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="icon" href="/favicon.ico" sizes="32x32" />
+  <link rel="icon" href="/images/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <style>
+    .inner-hero {
+      padding: calc(var(--nav-h) + 40px) 0 44px;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    .inner-hero::after {
+      content: '';
+      position: absolute;
+      right: -100px; top: 50%;
+      transform: translateY(-50%);
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(129,140,248,0.06) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .inner-hero h1 { font-size: clamp(28px,5vw,52px); margin-bottom: 20px; }
+    .inner-hero p  { font-size: 16px; color: var(--muted); max-width: 580px; font-weight: 300; line-height: 1.75; }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 48px;
+      padding: 16px 0 56px;
+      align-items: start;
+    }
+
+    .prose p { color: var(--muted); font-size: 16px; line-height: 1.85; margin-bottom: 20px; }
+    .prose p:last-child { margin-bottom: 0; }
+    .prose a { color: var(--orange); }
+
+    .info-stack { display: flex; flex-direction: column; gap: 16px; }
+
+    .info-block {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px 28px;
+      transition: border-color .2s;
+    }
+    .info-block:hover { border-color: rgba(129,140,248,.4); }
+
+    .info-block-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: .18em;
+      color: var(--orange);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      display: block;
+    }
+    .info-block h3 { font-size: 15px; color: var(--text); margin-bottom: 8px; }
+    .info-block p  { font-size: 14px; color: var(--muted); line-height: 1.7; }
+    .info-block a  { color: var(--orange); }
+
+    .values-section { padding: 72px 0; background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-top: 48px;
+    }
+
+    .value-tile {
+      background: var(--card);
+      padding: 28px 24px;
+    }
+
+    .value-num {
+      font-family: var(--font-head);
+      font-size: 32px;
+      font-weight: 900;
+      color: var(--orange);
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .value-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: .14em;
+      color: var(--muted);
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 12px;
+    }
+
+    .value-tile p { font-size: 13px; color: var(--dim); line-height: 1.6; }
+
+    .meshinfo-banner {
+      margin: 0;
+      padding: 72px 0;
+    }
+
+    .meshinfo-inner {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0;
+      overflow: hidden;
+    }
+
+    .meshinfo-text { padding: 40px 44px; }
+    .meshinfo-text h2 { font-size: 22px; margin-bottom: 12px; }
+    .meshinfo-text p  { color: var(--muted); font-size: 15px; line-height: 1.75; margin-bottom: 24px; max-width: 520px; }
+
+    .meshinfo-logo-panel {
+      width: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .meshinfo-logo-panel img {
+      width: 140px;
+      height: 140px;
+      object-fit: contain;
+    }
+
+    body.light .meshinfo-logo-panel img {
+      filter: invert(1);
+    }
+
+    @media (max-width: 900px) {
+      .about-grid { grid-template-columns: 1fr; gap: 32px; }
+      .values-grid { grid-template-columns: repeat(2, 1fr); }
+      .meshinfo-inner { grid-template-columns: 1fr; }
+      .meshinfo-logo-panel { display: none; }
+      .lora-grid { grid-template-columns: 1fr 1fr !important; align-items: start; }
+      .info-block { padding: 18px 20px; }
+    }
+    @media (max-width: 600px) {
+      .values-grid { grid-template-columns: 1fr 1fr; }
+      .lora-grid { grid-template-columns: 1fr !important; align-items: start; }
+    }
+    @media (max-width: 420px) {
+      .values-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+  <meta property="og:type"        content="website" />
+  <meta property="og:site_name"   content="Central Valley Mesh" />
+  <meta property="og:title"       content="About — Central Valley Mesh" />
+  <meta property="og:description" content="About the Central Valley Mesh community — who we are, where we operate, and what we're building." />
+  <meta property="og:url"         content="https://centralvalleymesh.net/about" />
+  <meta property="og:image"       content="https://centralvalleymesh.net/images/og-card.png" />
+  <meta name="twitter:card"       content="summary_large_image" />
+  <meta name="twitter:title"      content="About — Central Valley Mesh" />
+  <meta name="twitter:description" content="About the Central Valley Mesh community — who we are, where we operate, and what we're building." />
+  <link rel="canonical" href="https://centralvalleymesh.net/about" />
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">
+      <svg class="nav-logo-icon" viewBox="0 0 34 34" fill="none"><circle cx="17" cy="17" r="4" fill="#818cf8"/><circle cx="17" cy="17" r="9" stroke="#818cf8" stroke-width="1.5" opacity="0.55"/><circle cx="17" cy="17" r="15" stroke="#818cf8" stroke-width="1" opacity="0.25"/></svg>
+      <div class="nav-logo-text">Central Valley Mesh<span>Meshtastic Community</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/about/" class="active">About</a></li>
+      <li class="nav-has-dropdown" id="dd-docs">
+        <button class="nav-dropdown-trigger" onclick="toggleNav('dd-docs')">Docs<svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="nav-dropdown">
+          <a href="/docs/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Documentation</a>
+          <div class="dd-divider"></div>
+          <span class="dd-section-label">Guides</span>
+          <a href="/docs/getting-started/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Getting Started</a>
+          <a href="/docs/faq/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>FAQ</a>
+          <a href="/docs/tools/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Tools</a>
+          <a href="/docs/config-wizard/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>Config Wizard</a>
+</div>
+      </li>
+      <li class="nav-has-dropdown" id="dd-community">
+        <button class="nav-dropdown-trigger" onclick="toggleNav('dd-community')">Community<svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="nav-dropdown">
+          <a href="/community/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Overview</a>
+          <div class="dd-divider"></div>
+          <a href="/builds/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Builds</a>
+          <a href="/events/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Events</a>
+          <a href="/bounties/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Bounty Board</a>
+          <div class="dd-divider"></div>
+          <a href="/contribute/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>Contribute</a>
+</div>
+      </li>
+      <li><a href="/stats/">Stats</a></li>
+      <li><a href="/map/">Map</a></li>
+      <li><a href="/contact/">Contact</a></li>
+      <li><a href="https://discord.com/invite/9KUu5QQqMx" target="_blank" class="nav-discord" rel="noopener noreferrer">Discord</a></li>
+    </ul>
+    <button class="theme-toggle" aria-label="Toggle theme"><svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div id="mobile-menu">
+  <a href="/about/" class="mob-link active">About</a>
+  <div class="mob-section" id="mob-docs">
+    <button class="mob-section-trigger" onclick="toggleMobSection('mob-docs')">Docs<svg class="mob-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button>
+    <div class="mob-sub">
+      <a href="/docs/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Documentation</a>
+      <a href="/docs/getting-started/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Getting Started</a>
+      <a href="/docs/faq/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>FAQ</a>
+      <a href="/docs/tools/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Tools</a>
+      <a href="/docs/config-wizard/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>Config Wizard</a>
+    </div>
+  </div>
+  <div class="mob-section" id="mob-community">
+    <button class="mob-section-trigger" onclick="toggleMobSection('mob-community')">Community<svg class="mob-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button>
+    <div class="mob-sub">
+      <a href="/community/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Overview</a>
+      <a href="/builds/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Builds</a>
+      <a href="/events/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Events</a>
+      <a href="/bounties/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Bounty Board</a>
+      <a href="/contribute/"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>Contribute</a>
+    </div>
+  </div>
+  <a href="/stats/" class="mob-link">Stats</a>
+  <a href="/map/" class="mob-link">Map</a>
+  <a href="/contact/" class="mob-link">Contact</a>
+  <div class="mob-divider"></div>
+  <a href="https://discord.com/invite/9KUu5QQqMx" target="_blank" class="mob-discord" rel="noopener noreferrer"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>Join Discord</a>
+</div>
+<div class="inner-hero">
+  <div class="container">
+    <div class="section-label">// About CVM</div>
+    <h1>About Central Valley Mesh</h1>
+    <p>A volunteer-run Meshtastic network covering the Central Valley of California — free, encrypted, and off-grid.</p>
+  </div>
+</div>
+
+<main style="padding-top:0">
+  <div class="container">
+
+    <!-- Main about grid -->
+    <div class="about-grid">
+      <div class="prose fade-in">
+        <h2 class="section-title" style="font-size:22px;margin-bottom:24px">What is Central Valley Mesh?</h2>
+
+        <p>Central Valley Mesh is a community website and network for <a href="https://meshtastic.org/" target="_blank" rel="noopener noreferrer">Meshtastic</a> enthusiasts in the <a href="https://en.wikipedia.org/wiki/Central_Valley_(California)" target="_blank" rel="noopener noreferrer">Central Valley of California</a>. We operate a free, encrypted LoRa radio mesh network — no internet connection, no cell towers, no fees.</p>
+
+        <p>Our network covers the full Central Valley — from Stockton, Manteca, Modesto, and Tracy in the north through Turlock, Merced, Fresno, Visalia, and into Bakersfield in the south. The flat terrain of the Central Valley makes it ideal for long-range LoRa radio propagation.</p>
+
+        <p>Whether you're into emergency preparedness, amateur radio, hiking and outdoor activities, or just curious about mesh networking — you're welcome here. We're a friendly community of all skill levels, from people who just bought their first node to experienced builders running solar-powered repeaters.</p>
+
+        <p>The network runs on the <strong style="color:var(--text)">915 MHz ISM band</strong> — no FCC license required. Just pick up a device, flash Meshtastic, and you're on the air.</p>
+
+        <div class="btn-row" style="margin-top:28px">
+          <a href="/docs/getting-started/" class="btn btn-primary" style="color:#fff!important;text-shadow:0 1px 3px rgba(0,0,0,0.4)">Get Started</a>
+          <a href="https://discord.com/invite/9KUu5QQqMx" target="_blank" class="btn btn-discord" rel="noopener noreferrer">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+            Join Discord
+          </a>
+        </div>
+      </div>
+
+      <div class="info-stack fade-in">
+        <div class="info-block">
+          <span class="info-block-label">// What is Meshtastic?</span>
+          <h3>Open-source off-grid messaging</h3>
+          <p>Meshtastic turns inexpensive LoRa hardware into a self-healing mesh network. Nodes relay messages for each other, extending range automatically — encrypted, decentralized, and free.</p>
+          <a href="https://meshtastic.org/" target="_blank" style="font-size:13px;font-family:var(--font-mono);letter-spacing:.06em;margin-top:10px;display:inline-block" rel="noopener noreferrer">meshtastic.org <svg style="display:inline;vertical-align:middle;margin-left:3px" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+        </div>
+
+        <div class="info-block">
+          <span class="info-block-label">// Why the Central Valley?</span>
+          <h3>Perfect terrain for LoRa</h3>
+          <p>Hundreds of miles of flat farmland means a well-placed node can reach 20–30+ miles. We're mapping coverage together and building a network that spans the whole valley.</p>
+        </div>
+
+        <div class="info-block">
+          <span class="info-block-label">// Not in the area?</span>
+          <h3>Everyone's welcome</h3>
+          <p>You don't have to be in the valley to join our Discord. If you're looking for a local group, check out <a href="https://meshtastic.org/docs/community/local-groups/#california" target="_blank" rel="noopener noreferrer">other California communities</a> or <a href="https://meshtastic.org/docs/community/local-groups/" target="_blank" rel="noopener noreferrer">groups worldwide</a>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats / values -->
+  <!-- LoRa use cases -->
+  <section style="padding:72px 0;border-top:1px solid var(--border)">
+    <div class="container">
+      <div class="section-label fade-in">// What is LoRa?</div>
+      <h2 class="section-title fade-in" style="font-size:22px">Long-range radio for real life.</h2>
+      <p style="color:var(--muted);font-size:16px;line-height:1.8;max-width:620px;margin-top:8px;margin-bottom:40px" class="fade-in">LoRa (Long Range) is a radio technology that trades data speed for incredible range and battery life. A single small node can transmit a text message 20–30 miles on a single charge. Combined with Meshtastic's mesh protocol, messages hop between devices to reach even further.</p>
+
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px" class="fade-in lora-grid" style="align-items:start">
+
+        <div class="card">
+          <div class="card-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <h3>Emergency Communications</h3>
+          <p>When cell towers fail in earthquakes, wildfires, or floods — mesh radio keeps working. No infrastructure, no single point of failure. CERT teams, ham operators, and prepared households use Meshtastic as a last-resort communication layer.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </div>
+          <h3>Off-Grid Messaging</h3>
+          <p>Camping, backpacking, and remote work sites where cell coverage doesn't reach. Keep your group in touch across miles of trail without any monthly fees or cellular plan. Works in canyons, forests, and desert terrain.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <h3>Festivals &amp; Events</h3>
+          <p>Crowded venues kill cell reception. Meshtastic works independently of cellular — coordinate with your group at concerts, outdoor markets, car shows, or sporting events without relying on overloaded towers.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+          </div>
+          <h3>GPS Tracking &amp; SAR</h3>
+          <p>Track assets, vehicles, livestock, or group members in real-time with shared GPS positions. Search and rescue teams use mesh networks to coordinate in areas where radios don't reach and cell is unavailable.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          </div>
+          <h3>Agricultural &amp; Remote Ops</h3>
+          <p>Farms, ranches, and rural worksites spread across miles of property. Meshtastic provides low-cost communication between workers, equipment operators, and the main office without expensive satellite or radio systems.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h3>Privacy &amp; Resilience</h3>
+          <p>No accounts, no servers, no companies in the middle. Messages are AES256 encrypted and travel directly between radio devices. For those who want communication that can't be monitored, blocked, or shut down by a third party.</p>
+        </div>
+
+      </div>
+
+      <div class="card" style="margin-top:24px;padding:22px 28px;display:flex;gap:20px;align-items:center;flex-wrap:wrap" class="fade-in">
+        <div style="flex:1;min-width:200px">
+          <div style="font-family:var(--font-head);font-size:14px;color:var(--text);margin-bottom:6px;letter-spacing:.04em">Ready to get started?</div>
+          <p style="font-size:13px;color:var(--muted);margin:0">Hardware is $20–40, setup takes 30 minutes, and the network is free. Join Discord and we'll walk you through it.</p>
+        </div>
+        <div class="btn-row">
+          <a href="/docs/getting-started/" class="btn btn-primary" style="color:#fff!important;font-size:11px">Get Started</a>
+          <a href="/docs/config-wizard/" class="btn btn-outline" style="font-size:11px">Config Wizard</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="values-section">
+    <div class="container">
+      <div class="section-label fade-in">// By the Numbers</div>
+      <h2 class="section-title fade-in">What we're working with.</h2>
+
+      <div class="values-grid fade-in">
+        <div class="value-tile">
+          <span class="value-num">915</span>
+          <span class="value-label">MHz ISM Band</span>
+          <p>The unlicensed band Meshtastic uses in the US. No amateur radio license needed to participate.</p>
+        </div>
+        <div class="value-tile">
+          <span class="value-num">30+</span>
+          <span class="value-label">Miles Node-to-Node</span>
+          <p>Achievable in flat Valley terrain with a good antenna and elevated placement.</p>
+        </div>
+        <div class="value-tile">
+          <span class="value-num">256</span>
+          <span class="value-label">Bit AES Encryption</span>
+          <p>All messages are encrypted by default. Private channel keys lock down who can read what.</p>
+        </div>
+        <div class="value-tile">
+          <span class="value-num">$0</span>
+          <span class="value-label">Monthly Cost</span>
+          <p>The network is free. Hardware costs $20–40 once. No subscriptions, no carriers, no middlemen.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MeshInfo banner -->
+  <div class="container">
+    <section class="meshinfo-banner fade-in">
+      <div class="meshinfo-inner">
+        <div class="meshinfo-text">
+          <div class="section-label" style="margin-bottom:14px">// Network Infrastructure</div>
+          <h2>We run MeshInfo for the Valley.</h2>
+          <p>Our MeshInfo instance at <strong style="color:var(--text)">meshinfo.cvme.sh</strong> tracks every node reporting to MQTT across the Central Valley network — real-time positions, telemetry, signal data, and message history.</p>
+          <div class="btn-row">
+            <a href="https://meshinfo.cvme.sh/map" target="_blank" class="btn btn-primary" rel="noopener noreferrer">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              Live Map
+            </a>
+            <a href="https://meshinfo.cvme.sh" target="_blank" class="btn btn-outline" rel="noopener noreferrer">Full Dashboard <svg style="display:inline;vertical-align:middle;margin-left:3px" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+          </div>
+        </div>
+        <div class="meshinfo-logo-panel">
+          <img src="/images/logo.png" alt="Central Valley Mesh" />
+        </div>
+      </div>
+    </section>
+  </div>
+
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <svg width="20" height="20" viewBox="0 0 34 34" fill="none"><circle cx="17" cy="17" r="4" fill="#818cf8"/><circle cx="17" cy="17" r="9" stroke="#818cf8" stroke-width="1.5" opacity="0.55"/><circle cx="17" cy="17" r="15" stroke="#818cf8" stroke-width="1" opacity="0.25"/></svg>
+        <span>Central Valley Mesh</span>
+      </div>
+      <div class="footer-links">
+        <a href="/about/">About</a>
+        <a href="/docs/">Docs</a>
+        <a href="/community/">Community</a>
+        <a href="/builds/">Builds</a>
+        <a href="/events/">Events</a>
+        <a href="/bounties/">Bounties</a>
+        <a href="/stats/">Stats</a>
+        <a href="/map/">Map</a>
+        <a href="/contact/">Contact</a>
+        <a href="/contribute/">Contribute</a>
+        <a href="/found/">Found a Node?</a>
+        <a href="https://discord.com/invite/9KUu5QQqMx" target="_blank" rel="noopener noreferrer">Discord</a>
+        <a href="https://github.com/CentralValleyMesh/centralvalleymesh.github.io" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </div>
+      <p class="footer-copy">&copy; 2018&#8211;2026 Central Valley Mesh &nbsp;&middot;&nbsp; <a href="https://creativecommons.org/licenses/by/4.0" target="_blank" style="color:inherit" rel="noopener noreferrer">CC BY 4.0</a></p>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/main.js"></script>
+</body>
+</html>

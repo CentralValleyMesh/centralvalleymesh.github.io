@@ -27,10 +27,16 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
+      - name: Copy CNAME into public
+        run: |
+          if [ -f CNAME ]; then
+            cp CNAME public/CNAME
+          fi
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: './public'
 
       - name: Deploy to GitHub Pages
         id: deployment
